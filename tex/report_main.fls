@@ -108,6 +108,11 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/amsfonts/amsfonts.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/amsfonts/amsfonts.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/calc.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/calc.sty
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ulem/ulem.sty
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ulem/ulem.sty
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/public/latex-fonts/lasy6.tfm
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/tools/longtable.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
@@ -259,9 +264,13 @@ INPUT chapters/4-experiments.aux
 INPUT chapters/4-experiments.aux
 INPUT chapters/5-conclusions.aux
 INPUT chapters/5-conclusions.aux
+INPUT chapters/6-appendix.aux
+INPUT chapters/6-appendix.aux
 OUTPUT report_main.aux
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/ucsencs.def
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/ucsencs.def
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/caption/ltcaption.sty
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/caption/ltcaption.sty
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/context/base/supp-pdf.mkii
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/context/base/supp-pdf.mkii
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/oberdiek/epstopdf-base.sty
@@ -353,15 +362,6 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmss.fd
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmss.fd
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/jknappen/ec/ecss1095.tfm
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/jknappen/ec/ecsx1095.tfm
-INPUT report_main.lof
-INPUT report_main.lof
-OUTPUT report_main.lof
-INPUT report_main.lot
-INPUT report_main.lot
-OUTPUT report_main.lot
-INPUT report_main.loa
-INPUT report_main.loa
-OUTPUT report_main.loa
 OUTPUT chapters/1-introduction.aux
 INPUT chapters/1-introduction.tex
 INPUT chapters/1-introduction.tex
@@ -372,12 +372,20 @@ INPUT chapters/2-background.tex
 OUTPUT chapters/3-approach.aux
 INPUT chapters/3-approach.tex
 INPUT chapters/3-approach.tex
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmtt.fd
+INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmtt.fd
+INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/jknappen/ec/ectt1095.tfm
 OUTPUT chapters/4-experiments.aux
 INPUT chapters/4-experiments.tex
 INPUT chapters/4-experiments.tex
 OUTPUT chapters/5-conclusions.aux
 INPUT chapters/5-conclusions.tex
 INPUT chapters/5-conclusions.tex
+OUTPUT chapters/6-appendix.aux
+INPUT chapters/6-appendix.tex
+INPUT chapters/6-appendix.tex
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/uni-32.def
+INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/uni-32.def
 INPUT report_main.aux
 INPUT chapters/0_0-titlepage.aux
 INPUT chapters/0_0-titlepage.aux
@@ -393,8 +401,12 @@ INPUT chapters/4-experiments.aux
 INPUT chapters/4-experiments.aux
 INPUT chapters/5-conclusions.aux
 INPUT chapters/5-conclusions.aux
+INPUT chapters/6-appendix.aux
+INPUT chapters/6-appendix.aux
 INPUT ./report_main.out
 INPUT ./report_main.out
+INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1095.pk
+INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1095.pk
 INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecsx1440.pk
 INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecsx1440.pk
 INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1095.pk

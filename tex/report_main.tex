@@ -1,5 +1,6 @@
 
 % BCOR is binding correction
+%11pt font, 1in margins
 \documentclass[11pt, a4paper, BCOR=10mm, english]{scrbook}
 
 % include all packages and define commands in setup.tex
@@ -16,9 +17,9 @@
 
     \include{chapters/0_1-abstract}
     % \tableofcontents
-    \listoffigures
-    \listoftables
-    \listofalgorithms
+    % \listoffigures
+    % \listoftables
+    % \listofalgorithms
     \hypersetup{pageanchor=true}  % re-enable hyperlinking
 
     \mainmatter  % Arabic page numbers
@@ -27,6 +28,7 @@
     \include{chapters/3-approach}
     \include{chapters/4-experiments}
     \include{chapters/5-conclusions}
+    \include{chapters/6-appendix}
 
     % bibliography is not in the table of contents per default, add it manually
     % \addcontentsline{toc}{chapter}{Bibliography}

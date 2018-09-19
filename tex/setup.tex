@@ -38,10 +38,14 @@
     \usepackage{amsthm}   % | math, bmatrix etc
     \usepackage{amsfonts} % |
     \usepackage{calc}  % calculate within LaTeX
+    \usepackage[normalem]{ulem}
+    \useunder{\uline}{\ul}{}
+    \usepackage{longtable}
+    \usepackage{graphicx}
     \usepackage[unicode=true,bookmarks=true,bookmarksnumbered=true,
                 bookmarksopen=true,bookmarksopenlevel=1,breaklinks=false,
                 pdfborder={0 0 0},backref=false,colorlinks=false]{hyperref}
-
+    \usepackage{graphicx}
 
     %==========================================
     % needed for the example floats
@@ -91,7 +95,11 @@
     \newcommand{\mat}[1]{\mathbf{#1}}
     % tag equation with name
     \newcommand{\eqname}[1]{\tag*{#1}}
+    \usepackage[normalem]{ulem}
+    \useunder{\uline}{\ul}{}
 
+    % ------------------- table formatting -------------------
+    \newcolumntype{L}{>{\centering\arraybackslash}m{3cm}}
 
     % ------------------- pdf settings -------------------
 

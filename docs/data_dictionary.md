@@ -334,4 +334,4 @@ church_count_5000	The number of churchs in 5000 meters zone
 mosque_count_5000	The number of mosques in 5000 meters zone
 leisure_count_5000	The number of leisure facilities in 5000 meters zone
 sport_count_5000	The number of sport facilities in 5000 meters zone
-market_count_5000	The number of markets in 5000 meters zone
+market_count_5000   The number of markets in 5000 meters zone

@@ -1,4 +1,12 @@
-Group Project / Peer Review Policy:
+
+TODOs:
+
+
+
+
+
+
+>Group Project / Peer Review Policy:
 •Meet with your group ASAP if you haven't done so.
 •Determine when the ENTIRE group is going to meet each week (at least once a week). 
 •Submit a roster with each group member’s name, phone number and email and the agreed upon meeting time or times.  (By 9/14)
