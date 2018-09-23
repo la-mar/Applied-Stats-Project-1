@@ -54,9 +54,6 @@ train %>% colnames()
 train %>% str()
 
 
-? descr
-
-
 
 train.summary = descr(train) %>% round(2)
 

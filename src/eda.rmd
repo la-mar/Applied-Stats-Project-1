@@ -1,0 +1,298 @@
+---
+title: "EDA"
+author: "Brock Friedrich"
+date: "September 23, 2018"
+---
+
+```{r setup, include=FALSE}
+require(tidyverse)
+require(magrittr)
+require(kableExtra)
+require(car)
+require(knitr)
+require(summarytools)
+require(grid)
+require(gridExtra)
+require(svglite)
+# library(AER)
+# require(effects)
+
+# set knitr output options for consistent figures
+knitr::opts_chunk$set(fig.width=12,
+                      fig.height=8,
+                      fig.path='../figs/',
+                      warning=FALSE,
+                      message=FALSE,
+                      echo = TRUE,
+                      #root.dir = normalizePath(".."),
+                      #child.dir = normalizePath(".."),
+                      cache = FALSE,
+                      results = 'html',
+                      # results = 'asis',
+                      collapse = TRUE
+                      # tidy = TRUE
+)
+
+
+# 
+# # set visual theme for the project
+# ggplot2::theme_set(ggplot2::theme_bw())
+# ggplot2::theme_update(plot.title = ggplot2::element_text(hjust = 0.5))
+
+#prevent implicit conversion to scientific notation
+options(scipen = 999)
+options(knitr.table.format = "html")
+#disable column wrapping
+options(width=100) 
+
+# set options for descriptive statistics
+st_options('escape.pipe', TRUE)
+st_options('descr.stats', c("mean", "sd", "min", "med", "max", "Q1", "Q3", "N.Valid", "pct.valid", "iqr", "skewness", "kurtosis"))
+st_options('descr.transpose', TRUE)
+st_options('style', "rmarkdown")
+
+
+```
+
+
+```{r import_functions}
+
+
+summarize_frame <- function(frameframe)
+{
+    #returns table of summary statistics for each numeric column in dataframe
+    summarytools::descr(frameframe, transpose = TRUE)
+}
+
+
+standardize_names <- function(frameframe) 
+{  
+    # reformats column names to a regularized format wiuth:
+    # - punctuation removed
+    # - all letters lowercase
+    # - no leading or trailing whitespace
+    frameframe %>% 
+    rename_all(gsub, pattern = '[[:punct:] ]+', replacement = '') %>%
+    rename_all(tolower) %>%
+    rename_all(trimws)
+
+}
+
+table_styler <- function(frameframe)
+{
+  
+    # returns table formatted ready for display
+    kable(frameframe) %>%
+    kable_styling(position = "center"
+                 , full_width = TRUE
+                 , bootstrap_options = "striped")
+
+}
+
+```
+
+
+
+
+```{r read_train_data, results = 'html'}
+
+getwd()
+
+
+# read train data and ocnvert to tibble frame
+train = read.csv('./../data/train.csv') %>% as.tibble()
+
+# train %>% colnames()
+
+# View column names and types
+train %>% str()
+
+train %>% head()
+```
+
+
+
+```{r summarize_train}
+
+# summarize train
+train.summary = descr(train) %>% round(2)
+train.summary <- train.summary %>% add_rownames() %>%rename("column_name" = 1)
+# Write summary to file
+train.summary %>% write.csv('./../data/train_summary.csv')
+```
+
+
+```{r}
+
+
+
+train.summary
+
+```
+
+
+
+```{r fig.height = 35, fig.width = 16}
+
+
+# Boxplot per Feature
+ggplot(train.summary, aes(x = as.factor(column_name))) +
+  geom_boxplot(aes(
+      lower = Mean - Std.Dev, 
+      upper = Mean + Std.Dev, 
+      middle = Mean, 
+      ymin = Mean - 3*Std.Dev, 
+      ymax = Mean + 3*Std.Dev),
+    stat = "identity") +
+  ggtitle("Feature Variance") +
+  xlab("Features") +
+  ylab("Variation") +
+  theme(text = element_text(size=10),
+        axis.text.x = element_text(angle=90, vjust=0.5),
+        axis.text.y = element_text(size=8, margin = margin(t = 20, b = 20, l = 20)),
+        plot.title = element_text(hjust = 0.5, size = 16)) +
+  ylim(-1000, 1000) +
+coord_flip()
+```
+
+
+
+```{r}
+
+# train %>% ncol()
+
+c = colors(distinct = TRUE)
+
+
+
+
+
+inc <- 5
+u.bind <- train %>% ncol()
+l.bind <- u.bind - inc
+
+while (u.bind > inc)
+{
+  
+  # Get random color name from default palette 
+  c.s <- c[sample(2:length(c), 1)]
+  
+  # Open PNG device
+  png(filename = sprintf('./../figs/%s.png'
+                         , filename = train[,l.bind:u.bind] %>% 
+                              colnames() %>% 
+                              paste(collapse="---"))
+      , width = 10
+      , height = 10
+      , units = 'in'
+      , res = 300)
+  
+  # Plot 
+  scatterplotMatrix(train[,l.bind:u.bind] %>% select_if(is.numeric)
+                    , smooth=FALSE
+                    , diagonal="histogram"
+                    , col = c.s) 
+  
+  # Close device
+  dev.off()
+
+  sprintf("Generated Image: %s : %s", l.bind, u.bind)
+  
+  # Decrement binders
+  u.bind <- u.bind - (inc+1)
+  l.bind <- l.bind - (inc+1)
+  
+}
+
+# Plot remainder of columns
+if (u.bind > 0)
+{
+  
+  # Get random color name from default palette 
+  c.s <- c[sample(2:length(c), 1)]
+  
+  # Open PNG device
+  png(filename = sprintf('./../figs/%s.png'
+                         , filename = train[,l.bind:u.bind] %>% 
+                              colnames() %>% 
+                              paste(collapse="---"))
+    , width = 10
+    , height = 10
+    , units = 'in'
+    , res = 300)
+  
+  # Plot 
+  scatterplotMatrix(train[,l.bind:u.bind] %>% select_if(is.numeric)
+                    , smooth=FALSE
+                    , diagonal="histogram"
+                    , col = c.s) 
+  
+  # Close device
+  dev.off()
+  
+  
+  sprintf("Generated Image: %s : %s", l.bind, u.bind)
+  
+  # Decrement binders
+  u.bind <- u.bind - (inc+1)
+  l.bind <- l.bind - (inc+1)  
+  
+  
+}
+
+
+
+  # Save plot to file. Filename is a concatenation of the features included in the plot
+  # ggsave(filename = train[,l.bind:u.bind] %>% colnames() %>% paste(collapse="---")
+  #        , plot = p
+  #        , path = './../figs'
+  #        , height = 30
+  #        , width = 30
+  #        , device = "svg"
+  #       )
+  
+
+```
+
+
+```{r}
+train[,30:59] %>% head()
+
+scatterplotMatrix(train %>% select_if(is.numeric)# %>% select(oil.pk.bbl, frac.size, formavg)
+                  , smooth=FALSE
+                  , diagonal="histogram")
+```
+
+```{r}
+train[,60:99] %>% head()
+
+scatterplotMatrix(train %>% select_if(is.numeric)# %>% select(oil.pk.bbl, frac.size, formavg)
+                  , smooth=FALSE
+                  , diagonal="histogram")
+```
+
+```{r}
+train[,100:129] %>% head()
+
+scatterplotMatrix(train %>% select_if(is.numeric)# %>% select(oil.pk.bbl, frac.size, formavg)
+                  , smooth=FALSE
+                  , diagonal="histogram")
+```
+
+```{r}
+train[,100:129] %>% head()
+
+scatterplotMatrix(train %>% select_if(is.numeric)# %>% select(oil.pk.bbl, frac.size, formavg)
+                  , smooth=FALSE
+                  , diagonal="histogram")
+```
+
+```{r}
+
+```
+
+
+
+
+
+
