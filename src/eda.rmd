@@ -102,7 +102,13 @@ getwd()
 # read train data and ocnvert to tibble frame
 train = read.csv('./../data/train.csv') %>% as.tibble()
 
-# train %>% colnames()
+train <- train %>%
+  rename_all(
+      funs(
+        stringr::str_to_lower(.) %>%
+        stringr::str_replace_all(., '_', '.')
+      )
+  ) 
 
 # View column names and types
 train %>% str()
@@ -126,7 +132,7 @@ train.summary %>% write.csv('./../data/train_summary.csv')
 
 
 
-train.summary
+train.summary 
 
 ```
 
@@ -258,10 +264,16 @@ if (u.bind > 0)
 
 
 ```{r}
-# train %>%
-#   dplyr::select(-price_doc) %>% 
-#   colnames() %>% 
-#   paste(collapse="+")
+train %>%
+  dplyr::select(-price.doc
+                , -starts_with("cafe.count")
+                , -contains("sqm")
+                , -starts_with("ID.")
+                , -contains("5000")
+                , -contains("500")
+                ) %>%
+  colnames() %>%
+  paste(collapse="+")
 
 # https://www.statmethods.net/stats/regression.html
 # All Subsets Regression
@@ -271,7 +283,12 @@ library(leaps)
 #             ) 
 #   
   
-lps <-  regsubsets(price_doc~id+timestamp+full_sq+life_sq+floor+max_floor+material+build_year+num_room+kitch_sq+state+product_type+sub_area+area_m+raion_popul+green_zone_part+indust_part+children_preschool+preschool_quota+preschool_education_centers_raion+children_school+school_quota+school_education_centers_raion+school_education_centers_top_20_raion+hospital_beds_raion+healthcare_centers_raion+university_top_20_raion+sport_objects_raion+additional_education_raion+culture_objects_top_25+culture_objects_top_25_raion+shopping_centers_raion+office_raion+thermal_power_plant_raion+incineration_raion+oil_chemistry_raion+radiation_raion+railroad_terminal_raion+big_market_raion+nuclear_reactor_raion+detention_facility_raion+full_all+male_f+female_f+young_all+young_male+young_female+work_all+work_male+work_female+ekder_all+ekder_male+ekder_female+X0_6_all+X0_6_male+X0_6_female+X7_14_all+X7_14_male+X7_14_female+X0_17_all+X0_17_male+X0_17_female+X16_29_all+X16_29_male+X16_29_female+X0_13_all+X0_13_male+X0_13_female+raion_build_count_with_material_info+build_count_block+build_count_wood+build_count_frame+build_count_brick+build_count_monolith+build_count_panel+build_count_foam+build_count_slag+build_count_mix+raion_build_count_with_builddate_info+build_count_before_1920+build_count_1921.1945+build_count_1946.1970+build_count_1971.1995+build_count_after_1995+ID_metro+metro_min_avto+metro_km_avto+metro_min_walk+metro_km_walk+kindergarten_km+school_km+park_km+green_zone_km+industrial_km+water_treatment_km+cemetery_km+incineration_km+railroad_station_walk_km+railroad_station_walk_min+ID_railroad_station_walk+railroad_station_avto_km+railroad_station_avto_min+ID_railroad_station_avto+public_transport_station_km+public_transport_station_min_walk+water_km+water_1line+mkad_km+ttk_km+sadovoe_km+bulvar_ring_km+kremlin_km+big_road1_km+ID_big_road1+big_road1_1line+big_road2_km+ID_big_road2+railroad_km+railroad_1line+zd_vokzaly_avto_km+ID_railroad_terminal+bus_terminal_avto_km+ID_bus_terminal+oil_chemistry_km+nuclear_reactor_km+radiation_km+power_transmission_line_km+thermal_power_plant_km+ts_km+big_market_km+market_shop_km+fitness_km+swim_pool_km+ice_rink_km+stadium_km+basketball_km+hospice_morgue_km+detention_facility_km+public_healthcare_km+university_km+workplaces_km+shopping_centers_km+office_km+additional_education_km+preschool_km+big_church_km+church_synagogue_km+mosque_km+theater_km+museum_km+exhibition_km+catering_km+ecology+green_part_500+prom_part_500+office_count_500+office_sqm_500+trc_count_500+trc_sqm_500+cafe_count_500+cafe_sum_500_min_price_avg+cafe_sum_500_max_price_avg+cafe_avg_price_500+cafe_count_500_na_price+cafe_count_500_price_500+cafe_count_500_price_1000+cafe_count_500_price_1500+cafe_count_500_price_2500+cafe_count_500_price_4000+cafe_count_500_price_high+big_church_count_500+church_count_500+mosque_count_500+leisure_count_500+sport_count_500+market_count_500+green_part_1000+prom_part_1000+office_count_1000+office_sqm_1000+trc_count_1000+trc_sqm_1000+cafe_count_1000+cafe_sum_1000_min_price_avg+cafe_sum_1000_max_price_avg+cafe_avg_price_1000+cafe_count_1000_na_price+cafe_count_1000_price_500+cafe_count_1000_price_1000+cafe_count_1000_price_1500+cafe_count_1000_price_2500+cafe_count_1000_price_4000+cafe_count_1000_price_high+big_church_count_1000+church_count_1000+mosque_count_1000+leisure_count_1000+sport_count_1000+market_count_1000+green_part_1500+prom_part_1500+office_count_1500+office_sqm_1500+trc_count_1500+trc_sqm_1500+cafe_count_1500+cafe_sum_1500_min_price_avg+cafe_sum_1500_max_price_avg+cafe_avg_price_1500+cafe_count_1500_na_price+cafe_count_1500_price_500+cafe_count_1500_price_1000+cafe_count_1500_price_1500+cafe_count_1500_price_2500+cafe_count_1500_price_4000+cafe_count_1500_price_high+big_church_count_1500+church_count_1500+mosque_count_1500+leisure_count_1500+sport_count_1500+market_count_1500+green_part_2000+prom_part_2000+office_count_2000+office_sqm_2000+trc_count_2000+trc_sqm_2000+cafe_count_2000+cafe_sum_2000_min_price_avg+cafe_sum_2000_max_price_avg+cafe_avg_price_2000+cafe_count_2000_na_price+cafe_count_2000_price_500+cafe_count_2000_price_1000+cafe_count_2000_price_1500+cafe_count_2000_price_2500+cafe_count_2000_price_4000+cafe_count_2000_price_high+big_church_count_2000+church_count_2000+mosque_count_2000+leisure_count_2000+sport_count_2000+market_count_2000+green_part_3000+prom_part_3000+office_count_3000+office_sqm_3000+trc_count_3000+trc_sqm_3000+cafe_count_3000+cafe_sum_3000_min_price_avg+cafe_sum_3000_max_price_avg+cafe_avg_price_3000+cafe_count_3000_na_price+cafe_count_3000_price_500+cafe_count_3000_price_1000+cafe_count_3000_price_1500+cafe_count_3000_price_2500+cafe_count_3000_price_4000+cafe_count_3000_price_high+big_church_count_3000+church_count_3000+mosque_count_3000+leisure_count_3000+sport_count_3000+market_count_3000+green_part_5000+prom_part_5000+office_count_5000+office_sqm_5000+trc_count_5000+trc_sqm_5000+cafe_count_5000+cafe_sum_5000_min_price_avg+cafe_sum_5000_max_price_avg+cafe_avg_price_5000+cafe_count_5000_na_price+cafe_count_5000_price_500+cafe_count_5000_price_1000+cafe_count_5000_price_1500+cafe_count_5000_price_2500+cafe_count_5000_price_4000+cafe_count_5000_price_high+big_church_count_5000+church_count_5000+mosque_count_5000+leisure_count_5000+sport_count_5000+market_count_5000,data=train,nbest=10)
+lps <-  regsubsets(price.doc~full.sq+life.sq+floor+max.floor+material+build.year+num.room+kitch.sq+state+product.type+sub.area+area.m+raion.popul+green.zone.part+indust.part+children.preschool+preschool.quota+preschool.education.centers.raion+children.school+school.quota+school.education.centers.raion+school.education.centers.top.20.raion+hospital.beds.raion+healthcare.centers.raion+university.top.20.raion+sport.objects.raion+additional.education.raion+culture.objects.top.25+culture.objects.top.25.raion+shopping.centers.raion+office.raion+thermal.power.plant.raion+incineration.raion+oil.chemistry.raion+radiation.raion+railroad.terminal.raion+big.market.raion+nuclear.reactor.raion+detention.facility.raion+full.all+male.f+female.f+young.all+young.male+young.female+work.all+work.male+work.female+ekder.all+ekder.male+ekder.female+x0.6.all+x0.6.male+x0.6.female+x7.14.all+x7.14.male+x7.14.female+x0.17.all+x0.17.male+x0.17.female+x16.29.all+x16.29.male+x16.29.female+x0.13.all+x0.13.male+x0.13.female+raion.build.count.with.material.info+build.count.block+build.count.wood+build.count.frame+build.count.brick+build.count.monolith+build.count.panel+build.count.foam+build.count.slag+build.count.mix+raion.build.count.with.builddate.info+build.count.before.1920+build.count.1921.1945+build.count.1946.1970+build.count.1971.1995+build.count.after.1995+metro.min.avto+metro.km.avto+metro.min.walk+metro.km.walk+kindergarten.km+school.km+park.km+green.zone.km+industrial.km+water.treatment.km+cemetery.km+incineration.km+railroad.station.walk.km+railroad.station.walk.min+railroad.station.avto.km+railroad.station.avto.min+public.transport.station.km+public.transport.station.min.walk+water.km+water.1line+mkad.km+ttk.km+sadovoe.km+bulvar.ring.km+kremlin.km+big.road1.km+big.road1.1line+big.road2.km+railroad.km+railroad.1line+zd.vokzaly.avto.km+bus.terminal.avto.km+oil.chemistry.km+nuclear.reactor.km+radiation.km+power.transmission.line.km+thermal.power.plant.km+ts.km+big.market.km+market.shop.km+fitness.km+swim.pool.km+ice.rink.km+stadium.km+basketball.km+hospice.morgue.km+detention.facility.km+public.healthcare.km+university.km+workplaces.km+shopping.centers.km+office.km+additional.education.km+preschool.km+big.church.km+church.synagogue.km+mosque.km+theater.km+museum.km+exhibition.km+catering.km+ecology+green.part.1000+prom.part.1000+office.count.1000+trc.count.1000+cafe.sum.1000.min.price.avg+cafe.sum.1000.max.price.avg+cafe.avg.price.1000+big.church.count.1000+church.count.1000+mosque.count.1000+leisure.count.1000+sport.count.1000+market.count.1000+green.part.2000+prom.part.2000+office.count.2000+trc.count.2000+cafe.sum.2000.min.price.avg+cafe.sum.2000.max.price.avg+cafe.avg.price.2000+big.church.count.2000+church.count.2000+mosque.count.2000+leisure.count.2000+sport.count.2000+market.count.2000+green.part.3000+prom.part.3000+office.count.3000+trc.count.3000+cafe.sum.3000.min.price.avg+cafe.sum.3000.max.price.avg+cafe.avg.price.3000+big.church.count.3000+church.count.3000+mosque.count.3000+leisure.count.3000+sport.count.3000+market.count.3000
+                   , data = train
+                   , nbest = 10
+                   , nvmax = 
+                   , really.big = T)
+
 # view results 
 summary(lps)
 # plot a table of models showing variables in each model.
