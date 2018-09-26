@@ -1,8 +1,3 @@
----
-title: "EDA"
-author: "Brock Friedrich"
-date: "September 23, 2018"
----
 
 ```{r setup, include=FALSE}
 require(tidyverse)
@@ -34,7 +29,7 @@ knitr::opts_chunk$set(fig.width=12,
 )
 
 
-# 
+#
 # # set visual theme for the project
 # ggplot2::theme_set(ggplot2::theme_bw())
 # ggplot2::theme_update(plot.title = ggplot2::element_text(hjust = 0.5))
@@ -43,7 +38,7 @@ knitr::opts_chunk$set(fig.width=12,
 options(scipen = 999)
 options(knitr.table.format = "html")
 #disable column wrapping
-options(width=100) 
+options(width=100)
 
 # set options for descriptive statistics
 st_options('escape.pipe', TRUE)
@@ -65,13 +60,13 @@ summarize_frame <- function(frameframe)
 }
 
 
-standardize_names <- function(frameframe) 
-{  
+standardize_names <- function(frameframe)
+{
     # reformats column names to a regularized format wiuth:
     # - punctuation removed
     # - all letters lowercase
     # - no leading or trailing whitespace
-    frameframe %>% 
+    frameframe %>%
     rename_all(gsub, pattern = '[[:punct:] ]+', replacement = '') %>%
     rename_all(tolower) %>%
     rename_all(trimws)
@@ -80,7 +75,7 @@ standardize_names <- function(frameframe)
 
 table_styler <- function(frameframe)
 {
-  
+
     # returns table formatted ready for display
     kable(frameframe) %>%
     kable_styling(position = "center"
@@ -108,12 +103,13 @@ train <- train %>%
         stringr::str_to_lower(.) %>%
         stringr::str_replace_all(., '_', '.')
       )
-  ) 
+  )
 
 # View column names and types
 train %>% str()
 
 train %>% head()
+
 ```
 
 
@@ -121,7 +117,7 @@ train %>% head()
 ```{r summarize_train}
 
 # summarize train
-train.summary = descr(train) %>% round(2)
+train.summary <- descr(train) %>% round(2)
 train.summary <- train.summary %>% add_rownames() %>%rename("column_name" = 1)
 # Write summary to file
 train.summary %>% write.csv('./../data/train_summary.csv')
@@ -130,9 +126,7 @@ train.summary %>% write.csv('./../data/train_summary.csv')
 
 ```{r}
 
-
-
-train.summary 
+train.summary
 
 ```
 
@@ -144,10 +138,10 @@ train.summary
 # Boxplot per Feature
 ggplot(train.summary, aes(x = as.factor(column_name))) +
   geom_boxplot(aes(
-      lower = Mean - Std.Dev, 
-      upper = Mean + Std.Dev, 
-      middle = Mean, 
-      ymin = Mean - 3*Std.Dev, 
+      lower = Mean - Std.Dev,
+      upper = Mean + Std.Dev,
+      middle = Mean,
+      ymin = Mean - 3*Std.Dev,
       ymax = Mean + 3*Std.Dev),
     stat = "identity") +
   ggtitle("Feature Variance") +
@@ -179,71 +173,71 @@ l.bind <- u.bind - inc
 
 while (u.bind > inc)
 {
-  
-  # Get random color name from default palette 
+
+  # Get random color name from default palette
   c.s <- c[sample(2:length(c), 1)]
-  
+
   # Open PNG device
   png(filename = sprintf('./../figs/%s.png'
-                         , filename = train[,l.bind:u.bind] %>% 
-                              colnames() %>% 
+                         , filename = train[,l.bind:u.bind] %>%
+                              colnames() %>%
                               paste(collapse="---"))
       , width = 10
       , height = 10
       , units = 'in'
       , res = 300)
-  
-  # Plot 
+
+  # Plot
   scatterplotMatrix(train[,l.bind:u.bind] %>% select_if(is.numeric)
                     , smooth=FALSE
                     , diagonal="histogram"
-                    , col = c.s) 
-  
+                    , col = c.s)
+
   # Close device
   dev.off()
 
   sprintf("Generated Image: %s : %s", l.bind, u.bind)
-  
+
   # Decrement binders
   u.bind <- u.bind - (inc+1)
   l.bind <- l.bind - (inc+1)
-  
+
 }
 
 # Plot remainder of columns
 if (u.bind > 0)
 {
-  
-  # Get random color name from default palette 
+
+  # Get random color name from default palette
   c.s <- c[sample(2:length(c), 1)]
-  
+
   # Open PNG device
   png(filename = sprintf('./../figs/%s.png'
-                         , filename = train[,l.bind:u.bind] %>% 
-                              colnames() %>% 
+                         , filename = train[,l.bind:u.bind] %>%
+                              colnames() %>%
                               paste(collapse="---"))
     , width = 10
     , height = 10
     , units = 'in'
     , res = 300)
-  
-  # Plot 
+
+  # Plot
   scatterplotMatrix(train[,l.bind:u.bind] %>% select_if(is.numeric)
                     , smooth=FALSE
                     , diagonal="histogram"
-                    , col = c.s) 
-  
+                    , col = c.s)
+
   # Close device
   dev.off()
-  
-  
+
+
   sprintf("Generated Image: %s : %s", l.bind, u.bind)
-  
+
   # Decrement binders
   u.bind <- u.bind - (inc+1)
-  l.bind <- l.bind - (inc+1)  
-  
-  
+  l.bind <- l.bind - (inc+1)
+
+
 }
 
 
@@ -256,7 +250,7 @@ if (u.bind > 0)
   #        , width = 30
   #        , device = "svg"
   #       )
-  
+
 
 ```
 
@@ -280,21 +274,21 @@ train %>%
 library(leaps)
 # lps <- leaps(x = train %>% dplyr::select(-price_doc)
 #             ,y = train["price_doc"]
-#             ) 
-#   
-  
+#             )
+#
+
 lps <-  regsubsets(price.doc~full.sq+life.sq+floor+max.floor+material+build.year+num.room+kitch.sq+state+product.type+sub.area+area.m+raion.popul+green.zone.part+indust.part+children.preschool+preschool.quota+preschool.education.centers.raion+children.school+school.quota+school.education.centers.raion+school.education.centers.top.20.raion+hospital.beds.raion+healthcare.centers.raion+university.top.20.raion+sport.objects.raion+additional.education.raion+culture.objects.top.25+culture.objects.top.25.raion+shopping.centers.raion+office.raion+thermal.power.plant.raion+incineration.raion+oil.chemistry.raion+radiation.raion+railroad.terminal.raion+big.market.raion+nuclear.reactor.raion+detention.facility.raion+full.all+male.f+female.f+young.all+young.male+young.female+work.all+work.male+work.female+ekder.all+ekder.male+ekder.female+x0.6.all+x0.6.male+x0.6.female+x7.14.all+x7.14.male+x7.14.female+x0.17.all+x0.17.male+x0.17.female+x16.29.all+x16.29.male+x16.29.female+x0.13.all+x0.13.male+x0.13.female+raion.build.count.with.material.info+build.count.block+build.count.wood+build.count.frame+build.count.brick+build.count.monolith+build.count.panel+build.count.foam+build.count.slag+build.count.mix+raion.build.count.with.builddate.info+build.count.before.1920+build.count.1921.1945+build.count.1946.1970+build.count.1971.1995+build.count.after.1995+metro.min.avto+metro.km.avto+metro.min.walk+metro.km.walk+kindergarten.km+school.km+park.km+green.zone.km+industrial.km+water.treatment.km+cemetery.km+incineration.km+railroad.station.walk.km+railroad.station.walk.min+railroad.station.avto.km+railroad.station.avto.min+public.transport.station.km+public.transport.station.min.walk+water.km+water.1line+mkad.km+ttk.km+sadovoe.km+bulvar.ring.km+kremlin.km+big.road1.km+big.road1.1line+big.road2.km+railroad.km+railroad.1line+zd.vokzaly.avto.km+bus.terminal.avto.km+oil.chemistry.km+nuclear.reactor.km+radiation.km+power.transmission.line.km+thermal.power.plant.km+ts.km+big.market.km+market.shop.km+fitness.km+swim.pool.km+ice.rink.km+stadium.km+basketball.km+hospice.morgue.km+detention.facility.km+public.healthcare.km+university.km+workplaces.km+shopping.centers.km+office.km+additional.education.km+preschool.km+big.church.km+church.synagogue.km+mosque.km+theater.km+museum.km+exhibition.km+catering.km+ecology+green.part.1000+prom.part.1000+office.count.1000+trc.count.1000+cafe.sum.1000.min.price.avg+cafe.sum.1000.max.price.avg+cafe.avg.price.1000+big.church.count.1000+church.count.1000+mosque.count.1000+leisure.count.1000+sport.count.1000+market.count.1000+green.part.2000+prom.part.2000+office.count.2000+trc.count.2000+cafe.sum.2000.min.price.avg+cafe.sum.2000.max.price.avg+cafe.avg.price.2000+big.church.count.2000+church.count.2000+mosque.count.2000+leisure.count.2000+sport.count.2000+market.count.2000+green.part.3000+prom.part.3000+office.count.3000+trc.count.3000+cafe.sum.3000.min.price.avg+cafe.sum.3000.max.price.avg+cafe.avg.price.3000+big.church.count.3000+church.count.3000+mosque.count.3000+leisure.count.3000+sport.count.3000+market.count.3000
                    , data = train
                    , nbest = 10
-                   , nvmax = 
+                   , nvmax =
                    , really.big = T)
 
-# view results 
+# view results
 summary(lps)
 # plot a table of models showing variables in each model.
 # models are ordered by the selection statistic.
 plot(lps,scale="r2")
-# plot statistic by subset size 
+# plot statistic by subset size
 library(car)
 subsets(lps, statistic="rsq")
 

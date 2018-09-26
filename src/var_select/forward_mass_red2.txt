@@ -1,0 +1,101 @@
+[1] "price.doc ~ full.sq+life.sq+floor+max.floor+material+build.year+num.room+kitch.sq+state+product.type+area.m+green.zone.part+indust.part+children.preschool+children.school+male.f+female.f+young.male+young.female+work.male+work.female+ekder.male+ekder.female+ecology"
+              (Intercept)                   full.sq                   life.sq 
+         -682998.22405887           146144.43472365             -874.17153397 
+                    floor                 max.floor                  material 
+           39817.70606027            20611.73606470            88750.89788467 
+               build.year                  num.room                  kitch.sq 
+              -1.07527649            23092.99812154              440.04350200 
+                    state product.typeOwnerOccupier                    area.m 
+          790317.29938292           817657.48596025               -0.01287631 
+          green.zone.part               indust.part        children.preschool 
+        -2182105.86008175         -4752196.92859509              413.24758864 
+          children.school                    male.f                  female.f 
+             152.02415552               44.30043081              -39.15730998 
+               young.male              young.female                 work.male 
+            -511.59028474               66.28125429               56.06512357 
+              work.female                ekder.male              ekder.female 
+            -109.61507173              468.44751669             -124.36545512 
+              ecologygood            ecologyno data               ecologypoor 
+        -1049731.44924129         -2924487.27826455           -38440.79223992 
+      ecologysatisfactory 
+         -122324.76160149 
+
+Call:
+lm(formula = price.doc ~ full.sq + life.sq + floor + max.floor + 
+    material + build.year + num.room + kitch.sq + state + product.type + 
+    area.m + green.zone.part + indust.part + children.preschool + 
+    children.school + male.f + female.f + young.male + young.female + 
+    work.male + work.female + ekder.male + ekder.female + ecology, 
+    data = train)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-90402117  -1025695    310147   1401646  60604837 
+
+Coefficients:
+                                 Estimate      Std. Error t value
+(Intercept)                -682998.224059   214811.187912  -3.180
+full.sq                     146144.434724     2146.630059  68.081
+life.sq                       -874.171534      473.426536  -1.846
+floor                        39817.706060     7000.469720   5.688
+max.floor                    20611.736065     5948.977012   3.465
+material                     88750.897885    19925.303863   4.454
+build.year                      -1.075276        0.193268  -5.564
+num.room                     23092.998122    50777.022924   0.455
+kitch.sq                       440.043502     1009.344593   0.436
+state                       790317.299383    49010.532391  16.125
+product.typeOwnerOccupier   817657.485960   117851.703836   6.938
+area.m                          -0.012876        0.002318  -5.554
+green.zone.part           -2182105.860082   234254.909826  -9.315
+indust.part               -4752196.928595   300213.418498 -15.829
+children.preschool             413.247589      486.747086   0.849
+children.school                152.024156      528.786169   0.287
+male.f                          44.300431        5.604545   7.904
+female.f                       -39.157310        4.727703  -8.283
+young.male                    -511.590285      464.657825  -1.101
+young.female                    66.281254      505.904198   0.131
+work.male                       56.065124       11.522464   4.866
+work.female                   -109.615072       11.824963  -9.270
+ekder.male                     468.447517       48.079254   9.743
+ekder.female                  -124.365455       26.297346  -4.729
+ecologygood               -1049731.449241   101750.419314 -10.317
+ecologyno data            -2924487.278265   149712.865339 -19.534
+ecologypoor                 -38440.792240    97793.534882  -0.393
+ecologysatisfactory        -122324.761601   117271.517570  -1.043
+                                      Pr(>|t|)    
+(Intercept)                           0.001478 ** 
+full.sq                   < 0.0000000000000002 ***
+life.sq                               0.064843 .  
+floor                      0.00000001310740757 ***
+max.floor                             0.000532 ***
+material                   0.00000848318572402 ***
+build.year                 0.00000002687528255 ***
+num.room                              0.649265    
+kitch.sq                              0.662865    
+state                     < 0.0000000000000002 ***
+product.typeOwnerOccupier  0.00000000000414150 ***
+area.m                     0.00000002839236810 ***
+green.zone.part           < 0.0000000000000002 ***
+indust.part               < 0.0000000000000002 ***
+children.preschool                    0.395896    
+children.school                       0.773736    
+male.f                     0.00000000000000288 ***
+female.f                  < 0.0000000000000002 ***
+young.male                            0.270913    
+young.female                          0.895765    
+work.male                  0.00000115214134888 ***
+work.female               < 0.0000000000000002 ***
+ekder.male                < 0.0000000000000002 ***
+ekder.female               0.00000227485598515 ***
+ecologygood               < 0.0000000000000002 ***
+ecologyno data            < 0.0000000000000002 ***
+ecologypoor                           0.694265    
+ecologysatisfactory                   0.296924    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3575000 on 14788 degrees of freedom
+  (15655 observations deleted due to missingness)
+Multiple R-squared:  0.4999,	Adjusted R-squared:  0.499 
+F-statistic: 547.5 on 27 and 14788 DF,  p-value: < 0.00000000000000022
+
