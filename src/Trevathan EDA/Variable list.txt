@@ -2,7 +2,7 @@ full_sq X
 life_sq	X
 floor X
 area_m X
-raion_popul X
+raion_popul Possible log
 indust_part Negative
 children_preschool X
 preschool_quota	X
@@ -38,19 +38,19 @@ ekder_female X
 0_13_male
 0_13_female
 raion_build_count_with_material_info X	
-build_count_block
-build_count_wood
-build_count_frame
-build_count_brick
-build_count_monolith
-build_count_panel
-build_count_foam
-build_count_slag
-build_count_mix
+build_count_block X
+build_count_wood X
+build_count_frame X
+build_count_brick X
+build_count_monolith X
+build_count_panel X
+build_count_foam X
+build_count_slag X
+build_count_mix X
 raion_build_count_with_builddate_info
 build_count_before_1920
-build_count_1921-1945
-build_count_1946-1970	
+build_count_1921-1945 
+build_count_1946-1970 
 build_count_1971-1995	
 build_count_after_1995
 
@@ -260,6 +260,13 @@ sport_count_5000
 market_count_5000
 price_doc			
 	
+
+/*Running scatterplots to see if there is a trend. I ran quite a few of them until I saw that Borock
+had produced plots and uploaded them to Github. They still ran very slowly and took a large amoung of time
+and frustration*/
+proc sgscatter data=train;
+matrix price_doc full_sq life_sq floor area_m raion_popul;
+run;
 									
 	
 									
