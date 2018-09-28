@@ -54,3 +54,12 @@ sub_area
 thermal_power_plant_
 timestamp
 ttk_km
+
+Take log of:
+full_sq
+area_m
+green_zone_part
+indust_part
+
+
+
