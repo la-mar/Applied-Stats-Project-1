@@ -1,129 +1,23 @@
 
-```{r setup, include=FALSE}
-require(tidyverse)
-require(magrittr)
-require(kableExtra)
-require(car)
-require(knitr)
-require(summarytools)
-require(grid)
-require(gridExtra)
-require(svglite)
-# library(AER)
-# require(effects)
-
-# set knitr output options for consistent figures
-knitr::opts_chunk$set(fig.width=12,
-                      fig.height=8,
-                      fig.path='../figs/',
-                      warning=FALSE,
-                      message=FALSE,
-                      echo = TRUE,
-                      #root.dir = normalizePath(".."),
-                      #child.dir = normalizePath(".."),
-                      cache = FALSE,
-                      results = 'html',
-                      # results = 'asis',
-                      collapse = TRUE
-                      # tidy = TRUE
-)
+```{r}
+# Source external R dependencies
+source("src/setup.R")
+source("src/functions.R")
+source("src/import-and-clean-datasets.R")
+```
 
 
-#
-# # set visual theme for the project
-# ggplot2::theme_set(ggplot2::theme_bw())
-# ggplot2::theme_update(plot.title = ggplot2::element_text(hjust = 0.5))
+```{r corrplots}
 
-#prevent implicit conversion to scientific notation
-options(scipen = 999)
-options(knitr.table.format = "html")
-#disable column wrapping
-options(width=100)
-
-# set options for descriptive statistics
-st_options('escape.pipe', TRUE)
-st_options('descr.stats', c("mean", "sd", "min", "med", "max", "Q1", "Q3", "N.Valid", "pct.valid", "iqr", "skewness", "kurtosis"))
-st_options('descr.transpose', TRUE)
-st_options('style', "rmarkdown")
-
+require(corrplot)
+corrplot(cor(train_reduced), method = "number")
 
 ```
 
 
-```{r import_functions}
-
-
-summarize_frame <- function(frameframe)
-{
-    #returns table of summary statistics for each numeric column in dataframe
-    summarytools::descr(frameframe, transpose = TRUE)
-}
-
-
-standardize_names <- function(frameframe)
-{
-    # reformats column names to a regularized format wiuth:
-    # - punctuation removed
-    # - all letters lowercase
-    # - no leading or trailing whitespace
-    frameframe %>%
-    rename_all(gsub, pattern = '[[:punct:] ]+', replacement = '') %>%
-    rename_all(tolower) %>%
-    rename_all(trimws)
-
-}
-
-table_styler <- function(frameframe)
-{
-
-    # returns table formatted ready for display
-    kable(frameframe) %>%
-    kable_styling(position = "center"
-                 , full_width = TRUE
-                 , bootstrap_options = "striped")
-
-}
+```{r}
 
 ```
-
-
-
-
-```{r read_train_data, results = 'html'}
-
-getwd()
-
-
-# read train data and ocnvert to tibble frame
-train = read.csv('./../data/train.csv') %>% as.tibble()
-
-train <- train %>%
-  rename_all(
-      funs(
-        stringr::str_to_lower(.) %>%
-        stringr::str_replace_all(., '_', '.')
-      )
-  )
-
-# View column names and types
-train %>% str()
-
-train %>% head()
-
-```
-
-
-
-```{r summarize_train}
-
-# summarize train
-train.summary <- descr(train) %>% round(2)
-train.summary <- train.summary %>% add_rownames() %>%rename("column_name" = 1)
-# Write summary to file
-train.summary %>% write.csv('./../data/train_summary.csv')
-```
-
-
 
 
 ```{r eval = FALSE}

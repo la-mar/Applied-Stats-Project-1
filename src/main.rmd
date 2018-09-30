@@ -11,3 +11,32 @@ read_chunk('models.R')
 
 
 
+Prior to variable selection:
+1. Identify outliers and influential points - maybe exclude them at least temporarily.
+2. Add in any transformations of the variables that seem appropriate.
+
+
+
+
+1. Identify the key objectives. 
+2. Screen the available variables, deciding on a list that is sensitive to the objectives and excludes obvious redundancies. 3. Perform exploratory analysis, examining graphical displays and correlation coefficients. 
+4. Perform transformations as necessary. 
+5. Examine a residual plot after fitting a rich model, performing further transformations and considering outliers. 
+6. Use a computer-assisted technique for finding a suitable subset of explanatory variables, exerting enough control over the process to be sensitive to the questions of interest. 
+7. Proceed with the analysis, using the selected explanatory variables.
+
+Ramsey, Fred; Schafer, Daniel. The Statistical Sleuth: A Course in Methods of Data Analysis (Page 355). Cengage Textbook. Kindle Edition. 
+
+
+
+1. Predict price of specific property
+    - Select model based on minimization of RMSLE
+
+2. List of variables that are sensitive to the objectives, excluding obvious redundancies
+  - 
+
+
+
+
+
+
