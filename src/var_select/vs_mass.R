@@ -2,9 +2,9 @@
 # Source external R dependencies
 source("src/setup.R")
 source("src/functions.R")
+source("src/import-and-clean-datasets.R")
 
-
-load(file="data/train.RData")
+# load(file="data/train.RData")
 
 library(MASS)
 
@@ -20,6 +20,8 @@ coef <- lm$coefficients
 st1 <- stepAIC(lm, direction = "both")
 st2 <- stepAIC(lm, direction = "forward")
 st3 <- stepAIC(lm, direction = "backward")
+
+
 
 ############################################
 

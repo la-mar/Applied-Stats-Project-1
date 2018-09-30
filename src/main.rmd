@@ -1,8 +1,12 @@
 
 
-read_chunk('.R')
-read_chunk('.R')
-read_chunk('.R')
+
+
+```{r}
+
+read_chunk('models.R')
+```
+
 
 
 

@@ -123,17 +123,6 @@ train.summary <- train.summary %>% add_rownames() %>%rename("column_name" = 1)
 train.summary %>% write.csv('./../data/train_summary.csv')
 ```
 
-```{r}
-
-# train %>%
-#   summarise_all(funs(sum(is.na(.))))
-
-
-colMeans(is.na(train)) %>% as.data.frame() %>% dplyr::filter(. > 0, )
-
-# ? filter
-
-```
 
 
 

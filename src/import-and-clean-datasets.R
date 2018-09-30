@@ -4,6 +4,10 @@
 source("src/setup.R")
 source("src/functions.R")
 
+
+
+### Import Train ###
+
 train <- read.csv('data/train.csv') %>% as.tibble()
 
 train <- train %>%
@@ -11,16 +15,32 @@ train <- train %>%
       funs(
         stringr::str_to_lower(.) %>%
         stringr::str_replace_all(., '_', '.')
-      )
-  )
+      ) 
+  ) %>%
+  mutate(id = as.character(id))
 
 
 save(train, file="data/train.RData")
 
-# Preview column names and types
-# train %>% str()
-# train %>% head()
+### Import Test ###
 
+test <- read.csv('data/test.csv') %>% as.tibble()
+
+test <- test %>%
+  rename_all(
+    funs(
+      stringr::str_to_lower(.) %>%
+        stringr::str_replace_all(., '_', '.')
+    )
+  )
+
+
+save(test, file="data/test.RData")
+
+
+##############################
+#         Summarize          #
+##############################
 
 # Summarize dataset
 train.summary <- descr(train) %>% round(2)
@@ -30,19 +50,56 @@ save(train.summary, file="data/trainSummary.RData")
 # Write summary to file
 train.summary %>% write.csv('data/train_summary.csv')
 
+
+
+##############################
 ### Generate feature lists ###
+##############################
 
-# Capture all column names in original dataset
-cnames_full <- train %>% colnames()
 
-# Save names to csv
-cnames_save(cnames_full)
+### Saturated ###
+cnames_saturated <- train %>% colnames() # Capture all column names in original dataset
+cnames_saturated <- cnames_saturated %>% paste(collapse="+") # Collapse list of names into one string delimited by '+'
+exp_saturated <- paste(target_name, "~", paste(cnames_saturated)) # Create expression
 
-# Collapse list of names into one string delimited by '+'
-cnames_full <- cnames_full %>% paste(collapse="+")
 
-# Create expression
-exp_full <- paste(target_name, "~", paste(cnames_full))
+### Saturated - No Timeseries ###
+cnames_saturated_nts <- train %>% # Capture all column names in original dataset
+                            select(-timestamp, -id) %>%
+                            colnames() 
+cnames_saturated_nts <- cnames_saturated_nts %>% paste(collapse="+") # Collapse list of names into one string delimited by '+'
+exp_saturated_nts <- paste(target_name, "~", paste(cnames_saturated_nts)) # Create expression
+
+
+### Reduced ###
+
+cafe_counts <- train %>% 
+                  # select_if(is.numeric) %>% 
+                  select(id, contains('cafe.count')) %>%
+                  mutate(id = as.character(id)) %>%
+                  na.omit() %>%
+                  replace(is.na(.), 0) %>%
+                  mutate(rowsum = rowSums(select_if(., is.numeric))) %>%
+                  select(id, rowsum)
+              
+
+
+train_reduced <- train %>% 
+                  left_join(cafe_counts, by = c("id","id")) %>%
+                  select(-contains('cafe.count'), -timestamp, -id, -sub.area) %>%
+                  select_if(negate(is.factor)) %>%
+                  mutate(price.log = log(price.doc)) %>%
+                  na.omit()
+                  
+                  
+
+cnames_reduced <- train_reduced %>%
+                    select(-price.doc, -price.log) %>%
+                    colnames() %>% 
+                    paste(collapse="+")
+
+exp_reduced <- paste(target_name, "~", paste(cnames_reduced))
+exp_reduced_log <- paste('price.log', "~", paste(cnames_reduced))
 
 
 ### Reduced_1 ###

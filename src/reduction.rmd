@@ -1,0 +1,105 @@
+---
+title: "reduction"
+author: "Brock Friedrich"
+date: "September 30, 2018"
+output: html_document
+---
+
+
+
+1. Identify the key objectives. 
+2. Screen the available variables, deciding on a list that is sensitive to the objectives and excludes obvious redundancies. 3. Perform exploratory analysis, examining graphical displays and correlation coefficients. 
+4. Perform transformations as necessary. 
+5. Examine a residual plot after fitting a rich model, performing further transformations and considering outliers. 
+6. Use a computer-assisted technique for finding a suitable subset of explanatory variables, exerting enough control over the process to be sensitive to the questions of interest. 
+7. Proceed with the analysis, using the selected explanatory variables.
+
+Ramsey, Fred; Schafer, Daniel. The Statistical Sleuth: A Course in Methods of Data Analysis (Page 355). Cengage Textbook. Kindle Edition. 
+
+
+
+1. Predict price of specific property
+    - Select model based on minimization of RMSLE
+
+2. List of variables that are sensitive to the objectives, excluding obvious redundancies
+  - 
+
+
+
+
+```{r fig.width = 30, fig.height = 30, eval = FALSE}
+
+
+
+train %>% select(price.doc, full.sq, life.sq, floor, max.floor, material, build.year, num.room, kitch.sq, state, product.type, sub.area, area.m, raion.popul, green.zone.part, indust.part, children.preschool, preschool.quota, preschool.education.centers.raion, children.school, school.quota, school.education.centers.raion) %>%
+  mutate(price.log = log(price.doc)) %>%
+  gather(-price.log, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = price.log)) +
+    geom_point() +
+    facet_wrap(~ var, scales = "free") +
+    theme_bw()
+
+ggsave("test.png", width = 30, height = 30, units = "in")
+
+```
+
+
+
+```{r fig.width = 20, fig.height = 20}
+
+c = colors(distinct = TRUE)
+c.s <- c[sample(2:length(c), 1)]
+
+
+scatterplotMatrix(train %>% 
+                    select_if(is.numeric) %>% 
+                    select(contains('cafe'))
+                    , smooth=FALSE
+                    , diagonal="histogram"
+                    , col = c.s)
+```
+
+
+```{r}
+
+# Cafe_Count Correlation Matrix
+
+cafe_count <- train %>% 
+  select_if(is.numeric) %>% 
+  dplyr::select(contains('cafe.count')) %>%
+  na.omit() # %>%
+  # dplyr::select(1:5)
+
+
+png(filename = './../figs/cafe_cor.png'
+      , width = 40
+      , height = 40
+      , units = 'in'
+      , res = 300)
+
+library(GGally)
+ggpairs(cafe_count)
+
+dev.off()
+
+```
+
+All 'cafe_count' features are highly correlated. We will merge them into a single feature.
+
+```{r}
+
+cafe_count %>% head()
+
+cafe_count <- cafe_count %>%
+                 replace(is.na(.), 0) %>%
+                 mutate(rowsum = rowSums(.))
+
+
+plot(cafe_count$rowsum, train$price.doc)
+
+# cafe_count replacement variable density
+plot(density(cafe_count$rowsum)) # plots the results
+
+```
+
+The rowsum plot above is similar enough in shape to its component features that we may use it as a substitute during model selection.
