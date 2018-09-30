@@ -123,41 +123,21 @@ train.summary <- train.summary %>% add_rownames() %>%rename("column_name" = 1)
 train.summary %>% write.csv('./../data/train_summary.csv')
 ```
 
-
 ```{r}
 
-train.summary
+# train %>%
+#   summarise_all(funs(sum(is.na(.))))
+
+
+colMeans(is.na(train)) %>% as.data.frame() %>% dplyr::filter(. > 0, )
+
+# ? filter
 
 ```
 
 
 
-```{r fig.height = 35, fig.width = 16}
-
-
-# Boxplot per Feature
-ggplot(train.summary, aes(x = as.factor(column_name))) +
-  geom_boxplot(aes(
-      lower = Mean - Std.Dev,
-      upper = Mean + Std.Dev,
-      middle = Mean,
-      ymin = Mean - 3*Std.Dev,
-      ymax = Mean + 3*Std.Dev),
-    stat = "identity") +
-  ggtitle("Feature Variance") +
-  xlab("Features") +
-  ylab("Variation") +
-  theme(text = element_text(size=10),
-        axis.text.x = element_text(angle=90, vjust=0.5),
-        axis.text.y = element_text(size=8, margin = margin(t = 20, b = 20, l = 20)),
-        plot.title = element_text(hjust = 0.5, size = 16)) +
-  ylim(-1000, 1000) +
-coord_flip()
-```
-
-
-
-```{r}
+```{r eval = FALSE}
 
 # train %>% ncol()
 
@@ -257,7 +237,7 @@ if (u.bind > 0)
 # Modelling
 
 
-```{r}
+```{r eval = FALSE}
 train %>%
   dplyr::select(-price.doc
                 , -starts_with("cafe.count")
