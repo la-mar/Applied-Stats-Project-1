@@ -159,8 +159,14 @@ subsets(lps, statistic="rsq")
 
 ```{r}
 
+
+train$timestamp %>% as.Date() %>% min()
+
 ```
 
+```{r}
+train$timestamp %>% as.Date() %>% max()
+```
 
 
 

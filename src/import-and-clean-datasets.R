@@ -35,7 +35,12 @@ test <- test %>%
   )
 
 
-save(test, file="data/test.RData")
+
+### Import Test ###
+
+test <- read.csv('data/test.csv') %>% as.tibble()
+
+
 
 
 ##############################
@@ -73,9 +78,15 @@ exp_saturated_nts <- paste(target_name, "~", paste(cnames_saturated_nts)) # Crea
 
 ### Reduced ###
 
+train %>% 
+  # select_if(is.numeric) %>% 
+  select(id, contains('cafe')) %>%
+  colnames() %>%
+  write.csv('data/cafe_colnames.csv', row.names = FALSE)
+
 cafe_counts <- train %>% 
                   # select_if(is.numeric) %>% 
-                  select(id, contains('cafe.count')) %>%
+                  select(id, contains('cafe')) %>%
                   mutate(id = as.character(id)) %>%
                   na.omit() %>%
                   replace(is.na(.), 0) %>%
@@ -86,7 +97,7 @@ cafe_counts <- train %>%
 
 train_reduced <- train %>% 
                   left_join(cafe_counts, by = c("id","id")) %>%
-                  select(-contains('cafe.count'), -timestamp, -id, -sub.area) %>%
+                  select(-contains('cafe'), -timestamp, -id, -sub.area) %>%
                   select_if(negate(is.factor)) %>%
                   mutate(price.log = log(price.doc)) %>%
                   na.omit()

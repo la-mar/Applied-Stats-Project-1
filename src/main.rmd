@@ -8,6 +8,15 @@ read_chunk('models.R')
 ```
 
 
+# Clean up data
+
+# Impute / remove missing values
+
+# Assumptions
+
+
+
+
 
 
 
