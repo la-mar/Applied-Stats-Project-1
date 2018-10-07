@@ -15,26 +15,36 @@ pd.set_option('large_repr', 'truncate')
 
 # Matplotlib global config
 plt.rcParams.update({'legend.fontsize': 'x-large',
-          'figure.figsize': (15, 5),
+          'figure.figsize': (20, 10),
          'axes.labelsize': 'x-large',
-         'axes.titlesize':'x-large',
+         'axes.titlesize':'xx-large',
          'xtick.labelsize':'x-large',
          'ytick.labelsize':'x-large',
          'savefig.dpi' : 300,
          'savefig.format' : 'png',
          'savefig.transparent' : True,
-         'axes.labelpad' : 6
+         'axes.labelpad' : 10,
+         'axes.titlepad' : 10,
+         'axes.titleweight': 'bold'
          })
-matplotlib.style.use('seaborn-deep') #print(plt.style.available)
+plt.style.use('seaborn-deep')
+#print(plt.style.available)
+# plt.rcParams.update(plt.rcParamsDefault)
+plt.rcParams.keys()
 
-amt = 10000000
+
 def short_currency(amt: float) -> float:
         M = 1000000
         K = 1000
+        div = 1
+        divname = ''
         if amt > M:
-                return '$ {:.0f} MM'.format(amt/M)
+                div = M
+                divname = 'M'
         elif amt > K:
-                return '$ {:.0f} MM'.format(amt/K)
+                div = K
+                divname = 'K'
+        return '${:.0f} {divname}'.format(amt/div, divname = divname)
 
 tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
 
@@ -85,96 +95,103 @@ Y = subtrain.price_doc.values
 
 #! Problem 2-3
 # sns.set_style("seaborn-deep")
-with plt.style.context('seaborn-deep'):
-        plot = sns.lineplot(x= X
-                , y= Y
-                #     , data=subtrain
-                )
-        plot.set(xlabel = 'Months'
-                , ylabel = 'Price'
-                , title = 'Price by Month'
-                )
-        plot.yaxis.set_major_formatter(tform_currency)
-        # plot.get_figure().style.use('seaborn-deep')
-
-
-
-
-
-plot.get_figure().savefig('figs/p2-3_price-v-months.png')
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(X, Y
+        , linewidth=2
+        , linestyle=':'
+        , marker='o'
+        )
+ax.set_title('Price v Months')
+ax.set_xlabel('Months')
+ax.set_ylabel('Price')
+ax.yaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/p2-3_price-v-months.png')
 
 #! Problem 2-4
 
 ##? Part a
 
-
-# X = subtrain.month_number#.values#.reshape(-1, 1)
-# y = subtrain.price_doc#.values#.reshape(-1, 1)
-
+# OLS Regression Model
 reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
 
+# OLS Model Summary
+# TODO: Capture output for report
 reg.summary()
 
 
+# FIXME: Fix annotations
 influence_plot, ax = plt.subplots(figsize=(12,8))
 influence_plot = sm.graphics.influence_plot(reg, ax=ax, criterion="cooks")
-influence_plot
+influence_plot.savefig('figs/p2-4a_influence_plot.png')
 
 
-
+# Regression plots
+# FIXME: Format labels and tick marks
 reg_plot, ax = plt.subplots(figsize=(12,8))
 reg_plot = sm.graphics.plot_regress_exog(reg, "month_number", fig=reg_plot)
-reg_plot
+reg_plot.savefig('figs/p2-4a_reg_plot.png')
 
 
+# Partials
+# FIXME: Format labels and tick marks
 preg_plot, ax = plt.subplots(figsize=(12,8))
 preg_plot = sm.graphics.plot_partregress_grid(reg, fig=preg_plot)
-preg_plot
+preg_plot.savefig('figs/p2-4a_preg_plot.png')
 
 
-
+# Fit Plots
+# FIXME: Format labels and tick marks
 fit_plot, ax = plt.subplots(figsize=(12, 8))
 fit_plot = sm.graphics.plot_fit(reg, "month_number", ax=ax)
-fit_plot
-
+fit_plot.savefig('figs/p2-4a_fit_plot.png')
 
 ##? Part b
 
+# Join OLS residuals to original data
 subtrain = subtrain.join(reg.resid.rename('resid'))
+
+# Capture OLS residuals for use in later steps
 R = subtrain.resid.values
 
-
-
+# Plot OLS residuals as series
+# FIXME: Format labels and tick marks
 line_plot, ax = plt.subplots(figsize=(12, 8))
-line_plot = sns.lineplot(x = X
+ax = sns.lineplot(x = X
             , y = subtrain.resid.values
             , ax = ax
             , markers = True)
-line_plot
+ax.set_title('Residuals')
+ax.set_xlabel('Months')
+ax.set_ylabel('Price')
+line_plot.savefig('figs/p2-4b_line_plot.png')
 
 # doc: https://seaborn.pydata.org/generated/seaborn.JointGrid.html#seaborn.JointGrid
-g = sns.JointGrid(x = X, y = subtrain.price_doc.values)
-g = g.plot_joint(sns.regplot, color = '#15D888')
-g = g.plot_marginals(sns.distplot, color = '#15D888', kde = False)#, shade=True)
-rsq = lambda a, b: stats.pearsonr(a, b)[0] ** 2
-g = g.annotate(rsq, template="{stat}: {val:.2f}",
-                        stat="$R^2$", loc="upper left", fontsize=12)
-g.ax_joint.get_lines()[0].set_color('#D81565')
+
+# OLS Residuals join distribution + scatterplot
+# FIXME: Formatting. All of it. Add title and labels. Format y.
+joint = sns.JointGrid(x = X, y = subtrain.resid.values)
+joint = joint.plot_joint(sns.scatterplot, color = '#15D888')
+joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
+# rsq = lambda a, b: stats.pearsonr(a, b)[0] ** 2
+# g = g.annotate(rsq, template="{stat}: {val:.2f}",
+#                         stat="$R^2$", loc="upper left", fontsize=12)
+# g.ax_joint.get_lines()[0].set_color('#D81565')
 
 
 ##? Part c
 
 
-# plot autocorrelation of lm residuals
+# Plot autocorrelation of OLS residuals
 # doc: https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.add_subplot
 f, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=False, figsize=(24,16))
 ax1 = sm.graphics.tsa.plot_acf(subtrain.resid.values.squeeze(), lags=40, ax=ax1)
 ax2 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax2, method = 'ols')
 ax3 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax3, method = 'yw')
+f.savefig('figs/p2-4c_tsa_ar.png')
 
 
-
-# Autoregress lm residuals
+# Autoregress OLS residuals
 # doc: http://www.statsmodels.org/stable/generated/statsmodels.tsa.ar_model.AR.html#statsmodels.tsa.ar_model.AR
 #** What p results in the best fit?
 ts = sm.tsa.AR(subtrain.resid, dates = subtrain.index).fit(maxlag = 3)
@@ -182,6 +199,7 @@ ts = sm.tsa.AR(subtrain.resid, dates = subtrain.index).fit(maxlag = 3)
 # coefs
 
 # AR Model Summary
+# TODO: Export for report
 ts.Summary =(ts.params.rename('param_est').to_frame()
                         .join(ts.tvalues.rename('t'))
                         .join(ts.pvalues.rename('p > |t|'))
@@ -191,30 +209,39 @@ ts.Summary =(ts.params.rename('param_est').to_frame()
 
 
 
-# Information Criterion
+# Capture Information Criterion
+# TODO: Export for report
 ts.ics = pd.DataFrame({
         'AIC' : [ts.aic]
         ,'BIC' : [ts.bic]
         ,'Durbin-Watson' : sm.stats.durbin_watson(ts.resid.values)
         }).squeeze()
 
-# plot ts residuals
-fig = plt.figure(figsize=(12,8))
-ax = fig.add_subplot(111)
-ax = ts.resid.plot(ax=ax)
-
 # Check normality of ts residuals
-stats.normaltest(ts.resid).__dir__()
+stats.normaltest(ts.resid)
 
+# Plot AR qqplot
+# FIXME: Format
 fig = plt.figure(figsize=(12,8))
 ax = fig.add_subplot(111)
 fig = sm.graphics.qqplot(ts.resid, line='q', ax=ax, fit=True)
+fig.savefig('figs/p2-4c_tsa_qqplot.png')
 
+# Plot AR residuals
+# FIXME: Format
+fig = plt.figure(figsize=(12,8))
+ax = fig.add_subplot(111)
+ax = ts.resid.plot(ax=ax)
+fig.savefig('figs/p2-4c_tsa_resid.png')
+
+# Plot AR Residuals
+# FIXME: Format
 fig = plt.figure(figsize=(12,8))
 ax1 = fig.add_subplot(211)
 fig = sm.graphics.tsa.plot_acf(ts.resid, lags=40, ax=ax1)
 ax2 = fig.add_subplot(212)
 fig = sm.graphics.tsa.plot_pacf(ts.resid, lags=40, ax=ax2)
+fig.savefig('figs/p2-4c_tsa_acf+pacf.png')
 
 ##? Part d
 # doc: http://www.statsmodels.org/stable/generated/statsmodels.tsa.ar_model.AR.predict.html#statsmodels.tsa.ar_model.AR.predict
@@ -226,42 +253,52 @@ p_end = pd.Timestamp(year = 2016, month = 8, day = 31) #pd.Timestamp(year = 2016
 d_start = subtrain.index.min()
 
 # Define interval to predict
+# TODO: Make this less convoluted
 p_range = list(range(subtrain.month_number.max(), subtrain.month_number.max() + 12))
 p_dt_range = pd.date_range(subtrain.index.max() + 1, periods=12, freq='M')
 pred_range = pd.DataFrame(p_range).rename({0 : 'month_number'}, axis = 1)
 p_dt_range = pd.DataFrame(p_dt_range).join(pred_range).set_index(0)
+
 # In-sample prediction
 p_in = ts.predict() # offset by number of auto regressors
 
 # Out-of-sample prediction
 p_out = ts.predict(start = p_start, end = p_end)
 
+# Stack prediction sets together for plotting
 predX = np.hstack((X, pred_range.month_number.values))
 predY = np.hstack((p_in, p_out))
 
+
+# Plot OLS predictions
+# FIXME: Format
 fig = plt.figure()
 fig = sns.scatterplot(X, R, label="Data")
 fig = sns.lineplot(predX, predY, label="OLS prediction", color = 'red')
+fig.savefig('figs/p2-4d_ols_predict.png')
 
 
-
-#? Forecast residuals using ARMA
+#? Forecast residuals using ARMA (for fun?)
 arma = sm.tsa.ARMA(subtrain.resid, (4,0), dates = subtrain.index).fit(maxlag = 3)
 
-f, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
+# FIXME: Format
+fig, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
 ax1 = subtrain.resid.loc[d_start:].plot(ax=ax1)
 ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1)
 ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
-
+fig.savefig('figs/p2-4d_arma_predict.png')
 
 #! Problem 5
 
 
 #? Forecast price using OLS
+# Define forecast interval bounds
 p_start = pd.Timestamp(year = 2015, month = 7, day = 31)
 p_end = pd.Timestamp(year = 2016, month = 6, day = 30)
-in_means = reg.get_prediction().summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
 
+# Capture mean predictions
+# TODO: Refactor
+in_means = reg.get_prediction().summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
 pred_means = reg.get_prediction(pred_range).summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
 
 # In-sample prediction
@@ -270,52 +307,61 @@ p_in = reg.predict(subtrain.month_number).values
 # Out-of-sample prediction
 p_out = ts.predict(start = p_start, end = p_end)
 
+# Stack prediction sets for plotting
 predX = np.hstack((X, pred_range.month_number.values))
 predY = np.hstack((p_in, p_out))
 
+# Plot predict prices for ols predicted mean and AR predicted residuals
 # FIXME: This section is hacked together. Use reg.get_prediciton output instead and fix plots.
 fig, ax = plt.subplots()
 ax.plot(X, Y, 'o', label="Data")
 ax.plot(X, in_means.values, 'r', label="OLS prediction")
 ax.plot(pred_range.month_number.values, pred_means.values+p_out.values, 'g', label="OLS prediction")
 ax.legend(loc="best")
+fig.savefig('figs/p2-5d_ar_predict.png')
 
 
-
-
+# TODO: Refactor -> This is duplicated from above
 in_means = reg.get_prediction().summary_frame(alpha = 0.05)
 out_means = reg.get_prediction(p_dt_range).summary_frame(alpha = 0.05).join(p_dt_range.reset_index()).set_index(0)
 pred = pd.concat([in_means, out_means]).drop('month_number', axis = 1)
 
+
+# Plot predictions with CIs
+# TODO: Finish this plot
 pred[['mean','mean_ci_lower', 'mean_ci_upper']].plot()
 
-
+# TODO: Refactor -> More duplication in an effort to hack it.
 pred2 = pred[['mean','mean_ci_lower', 'mean_ci_upper']].astype('float')
 pred2.index = pd.to_datetime(pred2.index).rename('timestamp')
 
+# FIXME: Format
+# TODO: Finish this plot
 sns.tsplot([pred2.mean_ci_lower, pred2.mean_ci_upper, pred2['mean']])#, err_style="ci_bars", interpolate=False)
-
+# TODO: Save plot
 
 
 # Save data for submission
 pred.round(0).to_csv('data/p2preds.csv')
 
-#? Forecast price using ARMA
-
+#? Forecast price using ARMA (for fun?)
 p = ts.predict(start = p_start, end = p_end)
 
-# Arma Model for prediction #! Fix CI, time permitting
+# Arma Model for prediction
 arma = sm.tsa.ARMA(subtrain.price_doc, (4,0), dates = subtrain.index).fit(maxlag = 3)
 
+# FIXME: Format
+# TODO: Finish this plot
 f, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
 ax1 = subtrain.price_doc.loc[d_start:].plot(ax=ax1)
 ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1, alpha = 0.05)
 ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2, alpha = 0.05)
+# TODO: Save plot
 
 
 
 
-sm.tsa.ARMA.fit.__dir__()
+# sm.tsa.ARMA.fit.__dir__()
 
 
 # ts.conf_int()
