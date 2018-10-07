@@ -3,26 +3,44 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import numpy as np
-from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+from scipy import stats
 
 os.getcwd()
-# sns.set(style="ticks")
-# df = sns.load_dataset("iris")
-# sns.pairplot(df, hue="species")
-
+# Pandas global config
 pd.options.display.max_rows = None
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
-
 pd.set_option('large_repr', 'truncate')
+
+# Matplotlib global config
+plt.rcParams.update({'legend.fontsize': 'x-large',
+          'figure.figsize': (15, 5),
+         'axes.labelsize': 'x-large',
+         'axes.titlesize':'x-large',
+         'xtick.labelsize':'x-large',
+         'ytick.labelsize':'x-large',
+         'savefig.dpi' : 300,
+         'savefig.format' : 'png',
+         'savefig.transparent' : True,
+         'axes.labelpad' : 6
+         })
+matplotlib.style.use('seaborn-deep') #print(plt.style.available)
+
+amt = 10000000
+def short_currency(amt: float) -> float:
+        M = 1000000
+        K = 1000
+        if amt > M:
+                return '$ {:.0f} MM'.format(amt/M)
+        elif amt > K:
+                return '$ {:.0f} MM'.format(amt/K)
+
+tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
 
 
 #! Resources
 # http://www.statsmodels.org/stable/examples/notebooks/generated/tsa_arma_0.html
-# 
-
-
 
 train = pd.read_csv('data/train.csv')
 
@@ -34,7 +52,7 @@ pd.set_option('precision',2)
 
 train.get_dtype_counts()
 
-list(train.select_dtypes('object').columns)
+# list(train.select_dtypes('object').columns)
 
 train.timestamp = pd.to_datetime(train.timestamp)
 
@@ -52,12 +70,6 @@ cols = ['timestamp', 'year', 'month', 'day', 'yearmonth', 'price_doc']
 subtrain = train[cols].copy(deep = True)
 subtrain.describe()
 
-
-
-
-
-
-
 subtrain[['year', 'month', 'day']] = subtrain[['year', 'month', 'day']].astype('object')
 subtrain.dtypes
 # subtrain = subtrain.groupby('yearmonth').mean()
@@ -72,12 +84,24 @@ X = subtrain.month_number.values
 Y = subtrain.price_doc.values
 
 #! Problem 2-3
-plot = sns.lineplot(x= X
-            , y= Y
-        #     , data=subtrain
-             )
-plot.set(xlabel = 'months',
-        ylabel = 'price')
+# sns.set_style("seaborn-deep")
+with plt.style.context('seaborn-deep'):
+        plot = sns.lineplot(x= X
+                , y= Y
+                #     , data=subtrain
+                )
+        plot.set(xlabel = 'Months'
+                , ylabel = 'Price'
+                , title = 'Price by Month'
+                )
+        plot.yaxis.set_major_formatter(tform_currency)
+        # plot.get_figure().style.use('seaborn-deep')
+
+
+
+
+
+plot.get_figure().savefig('figs/p2-3_price-v-months.png')
 
 #! Problem 2-4
 
@@ -90,12 +114,13 @@ plot.set(xlabel = 'months',
 reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
 
 reg.summary()
+
+
 influence_plot, ax = plt.subplots(figsize=(12,8))
 influence_plot = sm.graphics.influence_plot(reg, ax=ax, criterion="cooks")
 influence_plot
 
 
-help(sm.graphics.influence_plot)
 
 reg_plot, ax = plt.subplots(figsize=(12,8))
 reg_plot = sm.graphics.plot_regress_exog(reg, "month_number", fig=reg_plot)
@@ -127,16 +152,6 @@ line_plot = sns.lineplot(x = X
             , markers = True)
 line_plot
 
-jplot = sns.jointplot(x = X
-            , y = subtrain.price_doc.values
-            , kind='reg'
-        #     , markers = True
-            )
-
-trend = jplot.ax_joint.get_lines()[0].set_color('red')
-trend.set_color('red')
-
-
 # doc: https://seaborn.pydata.org/generated/seaborn.JointGrid.html#seaborn.JointGrid
 g = sns.JointGrid(x = X, y = subtrain.price_doc.values)
 g = g.plot_joint(sns.regplot, color = '#15D888')
@@ -151,27 +166,11 @@ g.ax_joint.get_lines()[0].set_color('#D81565')
 
 
 # plot autocorrelation of lm residuals
-fig = plt.figure()
 # doc: https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.add_subplot
-# post = nrows, ncols, idx_of_subplox
-ax1 = fig.add_subplot(211)
-fig = sm.graphics.tsa.plot_acf(subtrain.resid.values.squeeze(), lags=40, ax=ax1)
-ax2 = fig.add_subplot(212)
-fig = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax2, method = 'ols')
-
 f, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=False, figsize=(24,16))
 ax1 = sm.graphics.tsa.plot_acf(subtrain.resid.values.squeeze(), lags=40, ax=ax1)
 ax2 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax2, method = 'ols')
 ax3 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax3, method = 'yw')
-
-# fig, ax1 = plt.subplots(figsize=(12, 8))
-# fig = sm.graphics.tsa.plot_acf(subtrain.resid.values.squeeze(), lags=40, ax=ax1)
-# fig, ax1 = plt.subplots(figsize=(12, 8))
-# fig = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax1, method = 'ols')
-# fig, ax1 = plt.subplots(figsize=(12, 8))
-# fig = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax1, method = 'yw')
-
-
 
 
 
@@ -181,28 +180,31 @@ ax3 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax3
 ts = sm.tsa.AR(subtrain.resid, dates = subtrain.index).fit(maxlag = 3)
 
 # coefs
-ts.params
 
-# aic
-ts.aic
+# AR Model Summary
+ts.Summary =(ts.params.rename('param_est').to_frame()
+                        .join(ts.tvalues.rename('t'))
+                        .join(ts.pvalues.rename('p > |t|'))
+                        .join(ts.conf_int().rename({0 : 'lcl',1 : 'ucl'}, axis = 1))
+                        .join(ts.bse.rename('se'))
+            )
 
-# bic
-ts.bic
- 
-# standard error
-ts.bse
 
-# dw
-sm.stats.durbin_watson(ts.resid.values)
+
+# Information Criterion
+ts.ics = pd.DataFrame({
+        'AIC' : [ts.aic]
+        ,'BIC' : [ts.bic]
+        ,'Durbin-Watson' : sm.stats.durbin_watson(ts.resid.values)
+        }).squeeze()
 
 # plot ts residuals
 fig = plt.figure(figsize=(12,8))
 ax = fig.add_subplot(111)
-ax = ts.resid.plot(ax=ax);
+ax = ts.resid.plot(ax=ax)
 
 # Check normality of ts residuals
-from scipy import stats
-stats.normaltest(ts.resid)
+stats.normaltest(ts.resid).__dir__()
 
 fig = plt.figure(figsize=(12,8))
 ax = fig.add_subplot(111)
@@ -256,9 +258,8 @@ ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
 
 
 #? Forecast price using OLS
-p_start = pd.Timestamp(year = 2015, month = 7, day = 31, freq = 'M')
-p_end = pd.Timestamp(year = 2016, month = 6, day = 30) #pd.Timestamp(year = 2016, month = 6, day = 30, freq = 'M')
-
+p_start = pd.Timestamp(year = 2015, month = 7, day = 31)
+p_end = pd.Timestamp(year = 2016, month = 6, day = 30)
 in_means = reg.get_prediction().summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
 
 pred_means = reg.get_prediction(pred_range).summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
@@ -280,9 +281,7 @@ ax.plot(pred_range.month_number.values, pred_means.values+p_out.values, 'g', lab
 ax.legend(loc="best")
 
 
-in_means.index.to_series().values
 
-dir(in_means.index.to_series)
 
 in_means = reg.get_prediction().summary_frame(alpha = 0.05)
 out_means = reg.get_prediction(p_dt_range).summary_frame(alpha = 0.05).join(p_dt_range.reset_index()).set_index(0)
@@ -290,6 +289,15 @@ pred = pd.concat([in_means, out_means]).drop('month_number', axis = 1)
 
 pred[['mean','mean_ci_lower', 'mean_ci_upper']].plot()
 
+
+pred2 = pred[['mean','mean_ci_lower', 'mean_ci_upper']].astype('float')
+pred2.index = pd.to_datetime(pred2.index).rename('timestamp')
+
+sns.tsplot([pred2.mean_ci_lower, pred2.mean_ci_upper, pred2['mean']])#, err_style="ci_bars", interpolate=False)
+
+
+
+# Save data for submission
 pred.round(0).to_csv('data/p2preds.csv')
 
 #? Forecast price using ARMA
@@ -301,9 +309,13 @@ arma = sm.tsa.ARMA(subtrain.price_doc, (4,0), dates = subtrain.index).fit(maxlag
 
 f, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
 ax1 = subtrain.price_doc.loc[d_start:].plot(ax=ax1)
-ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1)
-ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
+ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1, alpha = 0.05)
+ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2, alpha = 0.05)
 
+
+
+
+sm.tsa.ARMA.fit.__dir__()
 
 
 # ts.conf_int()
