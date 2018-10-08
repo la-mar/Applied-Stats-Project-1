@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.25)  19 SEP 2018 17:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.6.25)  7 OCT 2018 11:38
 entering extended mode
 **c:/Repositories/Applied-Stats-Project-1/tex/report_main.tex
 (c:/Repositories/Applied-Stats-Project-1/tex/report_main.tex
@@ -1201,10 +1201,7 @@ File: microtype.cfg 2018/01/14 v2.7a microtype main configuration file (RS)
 ))
 Package hyperref Info: Option `pdfnewwindow' set `true' on input line 110.
 Package hyperref Info: Option `plainpages' set `false' on input line 110.
-) (report_main.aux (chapters/0_0-titlepage.aux) (chapters/0_1-abstract.aux)
-(chapters/1-introduction.aux) (chapters/2-background.aux)
-(chapters/3-approach.aux) (chapters/4-experiments.aux)
-(chapters/5-conclusions.aux) (chapters/6-appendix.aux))
+) (report_main.aux)
 \openout1 = `report_main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
@@ -1278,12 +1275,11 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 9.
 LaTeX Info: Redefining \pageref on input line 9.
 LaTeX Info: Redefining \nameref on input line 9.
-
-(report_main.out) (report_main.out)
 \@outlinefile=\write4
 \openout4 = `report_main.out'.
 
- ABD: EveryShipout initializing macros
+
+ABD: EveryShipout initializing macros
 LaTeX Info: Redefining \microtypecontext on input line 9.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
@@ -1368,208 +1364,18 @@ chapter 1.
 
 
 
-]
-\openout2 = `chapters/2-background.aux'.
 
- (chapters/2-background.tex [2
+c:/Repositories/Applied-Stats-Project-1/tex/report_main.tex:26: pdfTeX error (f
+ont expansion): auto expansion is only possible with scalable fonts
 
-
-
-
-]
-chapter 2.
-) [3]
-\openout2 = `chapters/3-approach.aux'.
-
- (chapters/3-approach.tex [4
-
-
-
-
-]
-chapter 3.
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 6.
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
-File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
-Overfull \hbox (2590.97874pt too wide) in paragraph at lines 8--8
-[]\T1/cmtt/m/n/10.95 Write a descriptive summary for each of the variables you 
-are working with. It is up to you to decide exactly which strategies you want t
-o use and how you want to present them. At a minimum, you want to do some form 
-of numerical summary and some form of graphical summary for each one. Depending
- on the nature of your data, these might be a five-number summary, calculation 
-of the mean and standard deviation, a time series chart, a frequency histogram,
- or any of the various other data summary strategies that we have discussed.[] 
-
- []
-
-) [5]
-\openout2 = `chapters/4-experiments.aux'.
-
- (chapters/4-experiments.tex [6
-
-
-
-
-]
-chapter 4.
-) [7]
-\openout2 = `chapters/5-conclusions.aux'.
-
- (chapters/5-conclusions.tex [8
-
-
-
-
-]
-chapter 5.
-) [9]
-\openout2 = `chapters/6-appendix.aux'.
-
- (chapters/6-appendix.tex [10
-
-
-
-
-]
-chapter 6.
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 11--15
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 15--22
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 22--25
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 25--27
- [] [] 
- []
-
-(C:\Users\Brock\AppData\Roaming\MiKTeX\2.9\tex\latex\ucs\uni-32.def
-File: uni-32.def 2013/05/13 UCS: Unicode data U+2000..U+20FF
-)
-Overfull \hbox (377.32785pt too wide) in alignment at lines 27--50
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 50--70
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 70--90
- [] [] 
- []
-
-[11]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 90--110
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 110--130
- [] [] 
- []
-
-[12]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 130--150
- [] [] 
- []
-
-[13]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 150--170
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 170--190
- [] [] 
- []
-
-[14]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 190--210
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 210--230
- [] [] 
- []
-
-[15]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 230--250
- [] [] 
- []
-
-[16]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 250--270
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 270--290
- [] [] 
- []
-
-[17]
-Overfull \hbox (377.32785pt too wide) in alignment at lines 290--310
- [] [] 
- []
-
-
-Overfull \hbox (377.32785pt too wide) in alignment at lines 310--318
- [] [] 
- []
-
-[18]) [19]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 42.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 42.
- (report_main.aux (chapters/0_0-titlepage.aux)
-(chapters/0_1-abstract.aux) (chapters/1-introduction.aux)
-(chapters/2-background.aux) (chapters/3-approach.aux)
-(chapters/4-experiments.aux) (chapters/5-conclusions.aux)
-(chapters/6-appendix.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 42.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 42.
-Package rerunfilecheck Info: File `report_main.out' has not changed.
-(rerunfilecheck)             Checksum: 76134933894F6FD83F0743D479FD9DAD;1338.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 35635 strings out of 493305
- 659622 string characters out of 3138874
- 818165 words of memory out of 3000000
- 38629 multiletter control sequences out of 15000+200000
- 553885 words of font info for 93 fonts, out of 3000000 for 9000
+ 35231 strings out of 493305
+ 652566 string characters out of 3138874
+ 803510 words of memory out of 3000000
+ 38310 multiletter control sequences out of 15000+200000
+ 553697 words of font info for 94 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 67i,7n,77p,9134b,479s stack positions out of 5000i,500n,10000p,200000b,50000s
- <C:\Users\Brock\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\
-ectt1095.pk> <C:\Users\Brock\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\
-ec\dpi600\ecsx1440.pk> <C:\Users\Brock\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour
-\jknappen\ec\dpi600\ecrm1095.pk> <C:\Users\Brock\AppData\Local\MiKTeX\2.9\fonts
-\pk\ljfour\jknappen\ec\dpi600\ecbx1095.pk> <C:\Users\Brock\AppData\Local\MiKTeX
-\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1000.pk> <C:\Users\Brock\AppData\Lo
-cal\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm2074.pk> <C:\Users\Brock\
-AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm2488.pk> <C:\Us
-ers\Brock\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx2074.
-pk> <C:\Users\Brock\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600
-\ecrm1440.pk>
-Output written on report_main.pdf (25 pages, 126365 bytes).
-PDF statistics:
- 449 PDF objects out of 1000 (max. 8388607)
- 34 named destinations out of 1000 (max. 500000)
- 19557 words of extra memory for PDF output out of 20736 (max. 10000000)
-
+ 67i,7n,77p,9134b,433s stack positions out of 5000i,500n,10000p,200000b,50000s
+c:/Repositories/Applied-Stats-Project-1/tex/report_main.tex:26:  ==> Fatal erro
+r occurred, no output PDF file produced!

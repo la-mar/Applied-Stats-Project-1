@@ -250,22 +250,6 @@ INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/microtype/microtype.cf
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/microtype/microtype.cfg
 INPUT report_main.aux
 INPUT report_main.aux
-INPUT chapters/0_0-titlepage.aux
-INPUT chapters/0_0-titlepage.aux
-INPUT chapters/0_1-abstract.aux
-INPUT chapters/0_1-abstract.aux
-INPUT chapters/1-introduction.aux
-INPUT chapters/1-introduction.aux
-INPUT chapters/2-background.aux
-INPUT chapters/2-background.aux
-INPUT chapters/3-approach.aux
-INPUT chapters/3-approach.aux
-INPUT chapters/4-experiments.aux
-INPUT chapters/4-experiments.aux
-INPUT chapters/5-conclusions.aux
-INPUT chapters/5-conclusions.aux
-INPUT chapters/6-appendix.aux
-INPUT chapters/6-appendix.aux
 OUTPUT report_main.aux
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/ucsencs.def
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/ucsencs.def
@@ -281,14 +265,8 @@ INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
 INPUT C:/Program Files/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
-INPUT report_main.out
-INPUT report_main.out
-INPUT report_main.out
-INPUT report_main.out
-OUTPUT report_main.pdf
-INPUT ./report_main.out
-INPUT ./report_main.out
 OUTPUT report_main.out
+OUTPUT report_main.pdf
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/microtype/mt-cmr.cfg
 INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/microtype/mt-cmr.cfg
 OUTPUT chapters/0_0-titlepage.aux
@@ -366,60 +344,3 @@ OUTPUT chapters/1-introduction.aux
 INPUT chapters/1-introduction.tex
 INPUT chapters/1-introduction.tex
 INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/jknappen/ec/ecsx1440.tfm
-OUTPUT chapters/2-background.aux
-INPUT chapters/2-background.tex
-INPUT chapters/2-background.tex
-OUTPUT chapters/3-approach.aux
-INPUT chapters/3-approach.tex
-INPUT chapters/3-approach.tex
-INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmtt.fd
-INPUT C:/Program Files/MiKTeX 2.9/tex/latex/base/t1cmtt.fd
-INPUT C:/Program Files/MiKTeX 2.9/fonts/tfm/jknappen/ec/ectt1095.tfm
-OUTPUT chapters/4-experiments.aux
-INPUT chapters/4-experiments.tex
-INPUT chapters/4-experiments.tex
-OUTPUT chapters/5-conclusions.aux
-INPUT chapters/5-conclusions.tex
-INPUT chapters/5-conclusions.tex
-OUTPUT chapters/6-appendix.aux
-INPUT chapters/6-appendix.tex
-INPUT chapters/6-appendix.tex
-INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/uni-32.def
-INPUT C:/Users/Brock/AppData/Roaming/MiKTeX/2.9/tex/latex/ucs/uni-32.def
-INPUT report_main.aux
-INPUT chapters/0_0-titlepage.aux
-INPUT chapters/0_0-titlepage.aux
-INPUT chapters/0_1-abstract.aux
-INPUT chapters/0_1-abstract.aux
-INPUT chapters/1-introduction.aux
-INPUT chapters/1-introduction.aux
-INPUT chapters/2-background.aux
-INPUT chapters/2-background.aux
-INPUT chapters/3-approach.aux
-INPUT chapters/3-approach.aux
-INPUT chapters/4-experiments.aux
-INPUT chapters/4-experiments.aux
-INPUT chapters/5-conclusions.aux
-INPUT chapters/5-conclusions.aux
-INPUT chapters/6-appendix.aux
-INPUT chapters/6-appendix.aux
-INPUT ./report_main.out
-INPUT ./report_main.out
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecsx1440.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecsx1440.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1095.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1000.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1000.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm2074.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm2074.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm2488.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm2488.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx2074.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx2074.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1440.pk
-INPUT C:/Users/Brock/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1440.pk

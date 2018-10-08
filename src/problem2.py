@@ -6,13 +6,12 @@ import numpy as np
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from scipy import stats
-
 os.getcwd()
 # Pandas global config
 pd.options.display.max_rows = None
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
 pd.set_option('large_repr', 'truncate')
-
+pd.set_option('precision',2)
 # Matplotlib global config
 plt.rcParams.update({'legend.fontsize': 'x-large',
           'figure.figsize': (20, 10),
@@ -30,21 +29,26 @@ plt.rcParams.update({'legend.fontsize': 'x-large',
 plt.style.use('seaborn-deep')
 #print(plt.style.available)
 # plt.rcParams.update(plt.rcParamsDefault)
-plt.rcParams.keys()
+# plt.rcParams.keys()
+
+short_currency(100000)
 
 
 def short_currency(amt: float) -> float:
+        sign = '' if amt >= 0 else '-'
+        amt = abs(amt)
         M = 1000000
         K = 1000
         div = 1
         divname = ''
-        if amt > M:
+        
+        if amt >= M:
                 div = M
                 divname = 'M'
-        elif amt > K:
+        elif amt >= K:
                 div = K
                 divname = 'K'
-        return '${:.0f} {divname}'.format(amt/div, divname = divname)
+        return '{sign}${:.0f} {divname}'.format(amt/div, divname = divname, sign = sign)
 
 tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
 
@@ -54,15 +58,15 @@ tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
 
 train = pd.read_csv('data/train.csv')
 
-train.describe().T
+# Summarize Features
+htmlname = 'table-train-describe'
+train.describe().T.to_html(open('html/{htmlname}.html'.format(htmlname = htmlname), 'w')
+                                , table_id = htmlname)
 
-train.dtypes
 
-pd.set_option('precision',2)
-
+# Data Type Counts
 train.get_dtype_counts()
 
-# list(train.select_dtypes('object').columns)
 
 train.timestamp = pd.to_datetime(train.timestamp)
 
@@ -71,7 +75,6 @@ train['year'] = train.timestamp.apply(lambda x: (x.year))
 train['month'] = train.timestamp.apply(lambda x: (x.month))
 train['day'] = train.timestamp.apply(lambda x: (x.day))
 train['yearmonth'] = train.timestamp.apply(lambda x: ('{:04d}{:02d}'.format(x.year, x.month)))
-
 
 
 
@@ -98,7 +101,7 @@ Y = subtrain.price_doc.values
 fig, ax = plt.subplots(figsize=(12,8))
 ax.plot(X, Y
         , linewidth=2
-        , linestyle=':'
+        # , linestyle=':'
         , marker='o'
         )
 ax.set_title('Price v Months')
@@ -106,6 +109,32 @@ ax.set_xlabel('Months')
 ax.set_ylabel('Price')
 ax.yaxis.set_major_formatter(tform_currency)
 fig.savefig('figs/p2-3_price-v-months.png')
+
+
+
+
+
+# import pprint
+# import numpy as np
+
+# # Plotly
+# import plotly.plotly as py
+# import plotly.tools as tls
+# from plotly.graph_objs import *
+# import plotly.offline as offline
+# import plotly.graph_objs as go
+
+# pp = pprint.PrettyPrinter(indent=4)
+
+# plotly_fig = tls.mpl_to_plotly(fig)
+# pp.pprint(plotly_fig['layout'])
+# offline.plot(plotly_fig, filename='figs/name.html')
+
+
+
+
+
+
 
 #! Problem 2-4
 
@@ -118,19 +147,35 @@ reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
 # TODO: Capture output for report
 reg.summary()
 
+reg._results.outlier_test()
+
+with open('html/p2-4_ols_summary.html', 'w') as f:
+        f.write(reg._results.summary2().as_html())
+
+
+line_plot, ax = plt.subplots(figsize=(12, 8))
+ax = sns.scatterplot(x = reg._results.get_influence().cooks_distance[0]
+                , y = reg._results.get_influence().cooks_distance[1]
+                , ax = ax)
+ax.set_title('Residuals')
+
+
+
 
 # FIXME: Fix annotations
-influence_plot, ax = plt.subplots(figsize=(12,8))
-influence_plot = sm.graphics.influence_plot(reg, ax=ax, criterion="cooks")
+# influence_plot, ax = plt.subplots(figsize=(12,8))
+influence_plot = sm.graphics.influence_plot(reg, criterion="cooks", obs_labels = False)
 influence_plot.savefig('figs/p2-4a_influence_plot.png')
-
+influence_plot.properties()
 
 # Regression plots
-# FIXME: Format labels and tick marks
-reg_plot, ax = plt.subplots(figsize=(12,8))
-reg_plot = sm.graphics.plot_regress_exog(reg, "month_number", fig=reg_plot)
+reg_plot = sm.graphics.plot_regress_exog(reg, "month_number")
+for ax in reg_plot.axes:
+      ax.yaxis.set_major_formatter(tform_currency)
 reg_plot.savefig('figs/p2-4a_reg_plot.png')
 
+# reg_plot.axes[0].properties()
+# reg_plot.properties()
 
 # Partials
 # FIXME: Format labels and tick marks
@@ -144,6 +189,7 @@ preg_plot.savefig('figs/p2-4a_preg_plot.png')
 fit_plot, ax = plt.subplots(figsize=(12, 8))
 fit_plot = sm.graphics.plot_fit(reg, "month_number", ax=ax)
 fit_plot.savefig('figs/p2-4a_fit_plot.png')
+
 
 ##? Part b
 

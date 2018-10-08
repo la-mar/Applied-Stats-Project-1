@@ -1,0 +1,112 @@
+
+        .img-centered {
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: auto !important;
+            height: auto !important;
+            max-width: 80% !important;
+        }
+
+        /* Hide scrollbar in source code blocks */
+        pre {
+            overflow: hidden !important;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.5em;
+            margin: 20px
+        }
+
+
+        .text-intro {
+            display: block;
+            text-align: center;
+            margin: 10px;
+            font-size: 1.5em !important;
+        }
+
+        .text-center {
+            /* display: block; */
+            text-align: center;
+            /* padding: 20px; */
+        }
+        .text-callout {
+            font-weight: bold;
+        }
+
+        .section-label {
+            font-size: 2em;
+            vertical-align: middle;
+
+        }
+        .section-sublabel {
+            vertical-align: middle;
+        }
+        .td-callout {
+            font-weight: bold;
+            background-color: #20c997;
+        }
+
+        #container-global {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+        }
+
+        #container-header {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+        }
+
+        .section {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding-bottom: 20px;
+            padding-left: 15px;
+            padding-right: 15px;
+            display: block;
+        }
+
+        #authors {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            display: block;
+            text-align: center;
+            margin: 10px;
+            font-size: 1.5em;
+        }
+
+        #p2-4_ols_summary_fit_stats {
+            font-size: 1em;
+        }
+
+        #p2-4_ols_summary_coef {
+            font-size: 1em;
+            max-width: 33%;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        #p2-4_ols_summary_other {
+            font-size: 1em;
+        }
+        
