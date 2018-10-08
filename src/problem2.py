@@ -74,9 +74,8 @@ train.timestamp = pd.to_datetime(train.timestamp)
 train['year'] = train.timestamp.apply(lambda x: (x.year))
 train['month'] = train.timestamp.apply(lambda x: (x.month))
 train['day'] = train.timestamp.apply(lambda x: (x.day))
-train['yearmonth'] = train.timestamp.apply(lambda x: ('{:04d}{:02d}'.format(x.year, x.month)))
-
-
+train['yearmonth'] = train.timestamp.apply(lambda x:
+                ('{:04d}{:02d}'.format(x.year, x.month)))
 
 
 cols = ['timestamp', 'year', 'month', 'day', 'yearmonth', 'price_doc']
@@ -84,13 +83,12 @@ subtrain = train[cols].copy(deep = True)
 subtrain.describe()
 
 subtrain[['year', 'month', 'day']] = subtrain[['year', 'month', 'day']].astype('object')
-subtrain.dtypes
+# subtrain.dtypes
 # subtrain = subtrain.groupby('yearmonth').mean()
 subtrain = subtrain.set_index('timestamp')
 subtrain = subtrain.resample('M').mean()
 subtrain = subtrain.sort_index()
 subtrain['month_number'] = range(1, len(subtrain) + 1)
-# subtrain['timestamp'] = subtrain.index
 subtrain.head()
 
 X = subtrain.month_number.values
