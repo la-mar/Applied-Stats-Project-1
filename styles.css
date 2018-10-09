@@ -21,11 +21,24 @@
             margin: 20px
         }
 
-        /* p {
-            margin-left: auto;
-            margin-right: auto;
-            
+        th {
+            text-align: center;
+        }
+        td {
+            text-align: center;
+        }
+        /* tr:hover{
+            background-color: #8E8C84;
+            color: #fff;
         } */
+        th:hover{
+            background-color: #325D88;
+            color: #fff;
+        }
+        td:hover{
+            background-color: #325D88;
+            color: #fff;
+        }
         .text-intro {
             display: block;
             text-align: center;
@@ -131,3 +144,12 @@
             font-size: 1em;
         }
         
+        /* #table-train-describe {
+            padding-bottom: 0px !important;
+            padding-top: 0px !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            border-spacing: 0px;
+            border-collapse: collapse;
+            padding: 0px !important;
+        } */

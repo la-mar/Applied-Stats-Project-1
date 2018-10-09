@@ -31,14 +31,15 @@ plt.style.use('seaborn-deep')
 # plt.rcParams.update(plt.rcParamsDefault)
 # plt.rcParams.keys()
 
-short_currency(100000)
+# short_currency(100000)
 
+ruble = u'\u20BD' #'&#8381;'
 
 def short_currency(amt: float) -> float:
         sign = '' if amt >= 0 else '-'
-        amt = abs(amt)
-        M = 1000000
-        K = 1000
+        amt = float(abs(amt))
+        M = 1000000.0
+        K = 1000.0
         div = 1
         divname = ''
         
@@ -48,9 +49,20 @@ def short_currency(amt: float) -> float:
         elif amt >= K:
                 div = K
                 divname = 'K'
-        return '{sign}${:.0f} {divname}'.format(amt/div, divname = divname, sign = sign)
+        return '{sign}{ruble} {:.1f} {divname}'.format(amt/div, divname = divname, sign = sign, ruble = ruble)
 
 tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
+
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from pandas.plotting import lag_plot, autocorrelation_plot, table, scatter_matrix, boxplot
+
+
+
+
 
 
 #! Resources
@@ -80,7 +92,24 @@ train['yearmonth'] = train.timestamp.apply(lambda x:
 
 cols = ['timestamp', 'year', 'month', 'day', 'yearmonth', 'price_doc']
 subtrain = train[cols].copy(deep = True)
-subtrain.describe()
+
+subtrain['price_log'] = np.log(subtrain.price_doc)
+with open('html/subtrain-describe.html', 'w') as f:
+        f.write(
+                (
+                subtrain.groupby('year')['price_doc', 'price_log']
+                .describe()
+                .T
+                .to_html()
+                )
+                )
+
+pd.DataFrame.round
+
+subtrain[['price_doc', 'year']].groupby('year').describe()
+plt.figure()
+subtrain[['price_doc', 'year']].boxplot(by = 'year')
+plt.show()
 
 subtrain[['year', 'month', 'day']] = subtrain[['year', 'month', 'day']].astype('object')
 # subtrain.dtypes
@@ -93,6 +122,65 @@ subtrain.head()
 
 X = subtrain.month_number.values
 Y = subtrain.price_doc.values
+
+
+
+# sns.set_style("seaborn-deep")
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(  subtrain.index.values
+        , Y
+        , linewidth=2
+        # , linestyle=':'
+        , marker='o'
+        )
+ax.set_title('Price v Months')
+ax.set_xlabel('Months')
+ax.set_ylabel('Price')
+ax.yaxis.set_major_formatter(tform_currency)
+# fig.savefig('figs/p2-3_price-v-months.png')
+
+# rubles
+# (subtrain.mean()/subtrain.sum()).price_doc
+
+# x = 6000000*.0212*0.15
+# for y in range(1, 47):
+#  x = x+x*.0212
+# x
+
+
+
+# df = subtrain.replace(np.nan, 0)
+# df.index = df.index.date
+
+# # plt.figure()
+# f, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=True, figsize=(24,16))
+# lag_plot(np.log(df['price_doc']), lag=1, ax=ax1)
+# lag_plot(np.log(df['price_doc']), lag=3, ax=ax2)
+# lag_plot(np.log(df['price_doc']), lag=5, ax=ax3)
+# plt.show()
+
+# plt.figure()
+# ax2 = lag_plot(np.log(df['price_doc']), lag=2)
+# plt.show()
+
+# plt.figure()
+# lag_plot(np.log(df['price_doc']), lag=3)
+# plt.show()
+
+plt.figure()
+boxplot(np.log(df['price_doc']), by = 'year')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(24,16))
+ax.set_title('Home Price AR Plot')
+autocorrelation_plot(df['price_doc'])
+plt.show()
+fig.savefig('figs/home-price-ar-plot.png')
+
+# plt.figure()
+# boxplot(np.log(df['price_doc']))
+# plt.show()
+
 
 #! Problem 2-3
 # sns.set_style("seaborn-deep")

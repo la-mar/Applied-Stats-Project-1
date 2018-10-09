@@ -60,16 +60,12 @@
 
 
     <!-- SECTION: Header -->
-    <div id="container-global" class="container-fluid">
+    <!-- <div id="container-global" class="container-fluid">
         <div id="container-header" class="container-fluid">
-            <!-- ** Header -->
             <h1 align="center" class="display-3 text-center">Reducing Uncertainty in Residential Real Estate</h1>
-            <!-- <br/> -->
             <h2 align="center" style="margin-top: 20px; margin-bottom: 40px; font-size: 1.3em">Estimating Russian Home
                 Prices Through Regression and Variable Selection</h2>
-            <!-- </br> -->
             <hr class="bg-info">
-            <!-- <br/> -->
             <div class="text-center">
 
                 <div id="authors">
@@ -87,10 +83,10 @@
 
         <div id="img-banner" class="row">
             <img src="assets/stockphoto_wide.png" alt="" style="width: 100%; padding-bottom: 20px; margin-left: 30px;margin-right: 30px; opacity: 0.80;">
-        </div>
+        </div> -->
 
         <!-- SECTION: Introduction -->
-        <div id="introduction" class="row section">
+        <!-- <div id="introduction" class="row section">
             <div class="col-md-12">
                 <div class="section-label">Introduction</div>
                 <hr />
@@ -109,10 +105,10 @@
                     PREDICTION data set for the test model.
                 </p>
                 <br />
-            </div>
+            </div> -->
 
             <!-- SECTION: Data Overiew -->
-            <div class="row section">
+            <!-- <div class="row section">
                 <div class="section-label">Data Overview</div>
                 <hr />
 
@@ -129,10 +125,10 @@
 
                 <br />
             </div>
-        </div>
+        </div> -->
 
         <!-- SECTION: Problem 1 -->
-        <div id="section-problem-1-header" class="row section">
+        <!-- <div id="section-problem-1-header" class="row section">
             <div class="section-label">
                 Objective #1
                 <small class="text-secondary section-sublabel">
@@ -144,7 +140,7 @@
             </p>
             <br />
         </div>
-        <!-- </div> -->
+        </div> -->
 
         <!-- SECTION: Problem 2 -->
         <div id="section-problem-2-header" class="row section">
@@ -154,16 +150,13 @@
                     : Forecasting Mean Home Price using Time Series Analysis</small></div>
             <hr />
 
-            <p class="card-text text-danger">
-                Ramble on about the data. Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.Ramble on about the data.Ramble on about the
-                data.Ramble on about the data.Ramble on about the data.
-            </p>
+            <p>
+                The housing market in Moscow, Russia has seen relative stability in recent years.  After crashing in Q4 of 2012, home prices rallied to show consistent improvement, averaging +2.12% (apx. $19 K USD) month-over-month between Q1 2013 and Q1 2015. Despite the recent historical stability, complex interactions between a large number of housing characteristics add complexity to the task of predicting future prices.  As such, the central bank of Russia, Sberbank, has tasked us with shedding some light on the uncertainty that convolutes such broad questions. </p>
+                <br/>
+                <p>
+                    Our analysis will examine the forecasting of mean residential home prices from July 2015 to July 2016, emphasising the identification and remediation of serial effects.
+               </p>
+
             <br />
         </div>
         <!--! End Row-->
@@ -172,7 +165,7 @@
 
 
         <div id="problem-2-wrangling" class="container-fluid">
-            <h1> Data Wrangling
+            <h1> Data Exploration
                 <small class="text-secondary section-sublabel text-center">
                 </small></h1>
             <hr />
@@ -182,7 +175,7 @@
 
                 <p style="margin-top: 15px; margin-bottom: 25px;">
 
-                    Corralling the dataset to prepare it for analysis was straitforward. Using Python, the data was
+                    Wrangling the dataset to prepare it for analysis was a straitforward effort. Using Python, the data was
                     read into a Pandas dataframe. Once in the dataframe, it was just a matter of applying the timestamp
                     as the dataframe's index, then resampling the dataframe to the desired frequency. In this case, the
                     data is downsampled from it's original frequency of days ('D') to months ('M'), and calculating the
@@ -207,7 +200,7 @@ subtrain.describe()
 </pre>
                 </div>
                 <div class="col-md-6">
-                    <table class="table table-condensed text-center" style="max-width: 100%;">
+                    <table class="table table-condensed text-center table-sm" style="max-width: 70%;">
 
                         <thead>
                             <tr>
@@ -246,14 +239,95 @@ subtrain.describe()
                     </table>
                 </div>
 
-
-
+                <div class="table-responsive">
+                <table class="table table-condensed table-hover table-sm">
+                    <thead>
+                            <tr style="text-align: right;">
+                                <th></th>
+                                <th>year</th>
+                                <th>2011</th>
+                                <th>2012</th>
+                                <th>2013</th>
+                                <th>2014</th>
+                                <th>2015</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th rowspan="8" valign="top">price_log</th>
+                                <th>count</th>
+                                <td>753</td>
+                                <td>4839</td>
+                                <td>7978</td>
+                                <td>13662</td>
+                                <td>3239</td>
+                            </tr>
+                            <tr>
+                                <th>mean</th>
+                                <td>15.37</td>
+                                <td>15.48</td>
+                                <td>15.57</td>
+                                <td>15.66</td>
+                                <td>15.75</td>
+                            </tr>
+                            <tr> 
+                                <th>std</th>
+                                <td>0.75</td>
+                                <td>0.64</td>
+                                <td>0.56</td>
+                                <td>0.60</td>
+                                <td>0.58</td>
+                            </tr>
+                            <tr>
+                                <th>min</th>
+                                <td>12.74</td>
+                                <td>12.15</td>
+                                <td>12.47</td>
+                                <td>11.51</td>
+                                <td>13.12</td>
+                            </tr>
+                            <tr>
+                                <th>25%</th>
+                                <td>15.27</td>
+                                <td>15.24</td>
+                                <td>15.31</td>
+                                <td>15.42</td>
+                                <td>15.49</td>
+                            </tr>
+                            <tr>
+                                <th>50%</th>
+                                <td>15.52</td>
+                                <td>15.55</td>
+                                <td>15.59</td>
+                                <td>15.70</td>
+                                <td>15.78</td>
+                            </tr>
+                            <tr>
+                                <th>75%</th>
+                                <td>15.78</td>
+                                <td>15.80</td>
+                                <td>15.86</td>
+                                <td>15.96</td>
+                                <td>16.07</td>
+                            </tr>
+                            <tr>
+                                <th>max</th>
+                                <td>17.43</td>
+                                <td>18.53</td>
+                                <td>18.33</td>
+                                <td>18.21</td>
+                                <td>18.37</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
 
             </div>
             <!--! End Row-->
 
-
+            Lag plot.
+            <br/><br/><br/>
 
             <h1>Model: OLS</h1>
             <hr />
@@ -381,6 +455,8 @@ subtrain.describe()
             <hr class="pagebreak bg-primary" />
             <br />
 
+            <sup id="fn1"> All currency reported in 2018 USD at an exchange rate of 1 &#8381; / 0.015 $ </sup>
+
             <div class="row">
                 <div class="section-label">Appendix</div>
 
@@ -393,7 +469,7 @@ subtrain.describe()
                 <h1> Feature Summary</h1>
                 <hr class="bg-dark">
                 <div class="table-responsive">
-                    <table class="table table-condensed table-hover" id="table-train-describe">
+                    <table class="table table-condensed table-hover" id="table-train-describe" cellpadding = 0>
                         <thead>
                             <tr style="text-align: right;">
                                 <th></th>
