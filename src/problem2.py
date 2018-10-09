@@ -233,7 +233,11 @@ reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
 # TODO: Capture output for report
 reg.summary()
 
-reg._results.outlier_test()
+reg._results.mse_model
+reg._results.mse_resid
+reg._results.mse_total
+
+subtrain.outlier_test()
 
 with open('html/p2-4_ols_summary.html', 'w') as f:
         f.write(reg._results.summary2().as_html())
@@ -243,7 +247,7 @@ line_plot, ax = plt.subplots(figsize=(12, 8))
 ax = sns.scatterplot(x = reg._results.get_influence().cooks_distance[0]
                 , y = reg._results.get_influence().cooks_distance[1]
                 , ax = ax)
-ax.set_title('Residuals')
+ax.set_title('Influence')
 
 
 
