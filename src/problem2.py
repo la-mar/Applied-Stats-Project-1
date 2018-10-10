@@ -352,7 +352,7 @@ fit_plot.savefig('figs/fit_plot.png')
 # fit_plot, ax = plt.subplots(figsize=(12, 8))
 # fit_plot = sns.jointplot(x='month_number' , y='price_doc' , data=subtrain.reset_index(), kind="reg")
 # fit_plot = fit_plot.plot_marginals(sns.distplot, color = '#15D888', kde = False, ax=ax)
-ax.yaxis.set_major_formatter(tform_currency)
+# ax.yaxis.set_major_formatter(tform_currency)
 
 
 ##? Part b
@@ -406,6 +406,12 @@ f.savefig('figs/p2-4c_tsa_ar.png')
 #** What p results in the best fit?
 ts = sm.tsa.AR(subtrain.resid, dates = subtrain.index).fit(maxlag = 3)
 
+dir(ts)
+
+
+# ts.fittedvalues
+# ts.resid
+# ts.data
 # coefs
 
 # AR Model Summary
