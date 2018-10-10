@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css">
 
     <!-- ** Custom Style -->
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://raw.githubusercontent.com/la-mar/Applied-Stats-Project-1/master/css/styles.css" rel="stylesheet">
 
     <script type="text/javascript">
         window.MathJax = {
@@ -706,10 +706,29 @@
        
 <p>After some initial univariate testing, we began to see some patterns emerge. For example, several variables that end in “raion” (Russian for “neighborhood”) had the same pattern. These are all countable variables. Note how there are many zero values, followed by an approximate normal distribution, with a notable increase at the far right side of these graphs:</p>
 
+<div class="row" style = "padding-top: 3em;">
+
+        <div class="col-md-6 block-center col-center">
+            <img class = "img-centered" src="figs/a20.png" alt"">
+
+        </div> <!--! End Column -->
+
+        <div class="col-md-6 block-center col-center">
+
+            <img class = "img-centered" src="figs/a21.png" alt"">
+
+        </div> <!--! End Column -->
+                
+    </div><!--! End Row -->
+
+
 <br/>
 <h1 class="text-center"> Outlier Identification and Handling</h1>
 <hr class = "subsection"/>    
 <p>The same is true for many of the variables ending in “_raion” (“neighborhood”, in Russian). Further investigation shows that these neighborhoods (a.k.a. “sub_area” in our data) correspond to affluent and government sections of greater Moscow, Presneskoe (Presnensky) and Tversekoe (Tverskoy). These data show that there are some sub_areas that are culturally and administratively dense enough to legitimize these data findings. Therefore, we will not omit these variables due to simply being outliers, else we may risk losing material information about their predictive power for property values in certain areas. </p>
+
+
+
 
 <p><strong>Presnensky District></strong> is an upscale area known for the State Museum of Oriental Art and quiet parks like Patriarch’s Ponds. Child-friendly attractions include the Moscow Zoo, and hands-on exhibits at the nearby Moscow Planetarium. A variety of restaurants serving European and fusion fare line Bolshaya Nikitskaya Street, which is also home to classic repertory at the Mayakovsky Theater.</p>
 

@@ -70,9 +70,18 @@ from pandas.plotting import lag_plot, autocorrelation_plot, table, scatter_matri
 
 train = pd.read_csv('data/train.csv')
 
+train.describe()
 
 
 
+
+train.shape
+train.info()
+train.get_dtype_counts()
+
+# help(
+# pd.DataFrame.dot
+# )
 
 # Summarize Features
 htmlname = 'table-train-describe'
