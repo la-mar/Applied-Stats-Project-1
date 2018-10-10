@@ -1,0 +1,1824 @@
+
+        <hr class="" style = "page-break-after: always;"/>
+        <!-- SECTION: Appendix -->
+        <div id="container-header" class="container-fluid">
+            <!-- <hr class="pagebreak bg-primary" style = "page-break-after: always;"/> -->
+            <br />
+            <div class="row">
+              <div class="section-label">Appendix: Objective #1</div>
+            <pre><code>
+
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 1 - Import and rename data variables */
+                    
+                    /* import data */
+                    
+                    proc import datafile="/home/allen_crane0/Btrain.csv"  /*You will need to change the path or use the import wizard.*/
+                              dbms=dlm out=train replace;
+                         delimiter=',';
+                         getnames=yes;
+                    run;
+                    
+                    proc print data=train (obs=10);
+                    run;
+                    
+                    proc contents data=train;
+                    run;
+                    
+                    /* train version: this step shortens long >32 char variable names 
+                    and renames variables that start with a number */
+                    
+                    options validvarname=any;
+                    data train;
+                    set train;
+                    rename preschool_education_centers_raio='ps_educ_centers_raion'n;
+                    rename school_education_centers_top_20_='s_educ_centers_top20_raion'n;
+                    rename raion_build_count_with_material_='raion_bld_cnt_material_info'n;
+                    rename public_transport_station_min_wal ='pub_trans_stn_min_walk'n; 
+                    run;
+                    
+                    options validvarname=any;
+                    data train;
+                    set train (rename=('0_6_all'n='group_0_6_all'n 
+                    '0_6_male'n='group_0_6_male'n
+                    '0_6_female'n='group_0_6_female'n 
+                    '7_14_all'n='group_7_14_all'n
+                    '7_14_male'n='group_7_14_male'n
+                    '7_14_female'n='group_7_14_female'n
+                    '0_17_all'n='group_0_17_all'n
+                    '0_17_male'n='group_0_17_male'n
+                    '0_17_female'n='group_0_17_female'n
+                    '16_29_all'n='group_16_29_all'n
+                    '16_29_male'n='group_16_29_male'n
+                    '16_29_female'n='group_16_29_female'n 
+                    '0_13_all'n='group_0_13_all'n
+                    '0_13_male'n='group_0_13_male'n 
+                    '0_13_female'n='group_0_13_female'n));
+                    run;
+                    
+                    options validvarname=any;
+                    data train;
+                    set train (rename=('build_count_1921-1945'n='build_count_1921_1945'n
+                    'build_count_1946-1970'n='build_count_1946_1970'n
+                    'build_count_1971-1995'n='build_count_1971_1995'n));
+                    run;
+                    
+                    proc contents data=train;
+                    run;
+
+
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 2 - Convert incorrectly imported-as-character variables to numeric */
+                    
+                    /* convert train variables to numeric */
+                    
+                    data train2;
+                    set train;
+                       n_build_year = input(build_year,8.);
+                       n_kitch_sq = input(kitch_sq,8.);
+                       n_material = input(material,8.);
+                       n_max_floor = input(max_floor,8.);
+                       n_num_room = input(num_room,8.);  
+                       n_state = input(state,8.);
+                    run;
+                    
+                    proc print data=train2 (obs=10);
+                    run;
+                    
+                    proc contents data=train2;
+                    run;
+                    
+                    proc means data=train2
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run;
+                    
+                    /* this step just drops the original train character variables */
+                    
+                    data train3;
+                    set train2 (drop = 
+                    build_year 
+                    kitch_sq 
+                    material 
+                    max_floor 
+                    num_room   
+                    state 
+                    ); 
+                    run;
+                    
+                    proc print data=train3 (obs=10); 
+                    run;
+                    
+                    proc contents data=train3;
+                    run;
+                    
+                    proc means data=train3
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run; 
+                    
+                    /* this step just renames the "n_*" variables to the origial variable names */
+                    
+                    data train3;
+                    set train3 (rename=( 
+                    'n_build_year'n='build_year'n
+                    'n_kitch_sq'n='kitch_sq'n
+                    'n_material'n='material'n
+                    'n_max_floor'n='max_floor'n
+                    'n_num_room'n='num_room'n
+                    'n_state'n='state'n
+                    ));
+                    run;
+                    
+                    proc print data=train3 (obs=10);
+                    run;
+                    
+                    proc means data = train3 n nmiss;
+                      var _numeric_;
+                    run;
+                    
+                    proc univariate data=train3;
+                    var state
+                    ;
+                    run;
+                    
+                    proc contents data=train3;
+                    run;
+                    
+                    proc means data=train3
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run;
+                    
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 3 - Impute missing values using PROC MI */
+                    
+                    /* this step uses PROC MI to impute missing values */
+                    
+                    proc mi data=train3 seed=501213 mu0=0 out=train4;
+                    var 
+                    life_sq
+                    floor
+                    preschool_quota
+                    school_quota
+                    hospital_beds_raion
+                    raion_bld_cnt_material_info
+                    build_count_block
+                    build_count_wood
+                    build_count_frame
+                    build_count_brick
+                    build_count_monolith
+                    build_count_panel
+                    build_count_foam
+                    build_count_slag
+                    build_count_mix
+                    raion_build_count_with_builddate
+                    build_count_before_1920
+                    build_count_1921_1945
+                    build_count_1946_1970
+                    build_count_1971_1995
+                    build_count_after_1995
+                    metro_min_walk
+                    metro_km_walk
+                    railroad_station_walk_km
+                    railroad_station_walk_min
+                    id_railroad_station_walk
+                    cafe_sum_500_min_price_avg
+                    cafe_sum_500_max_price_avg
+                    cafe_avg_price_500
+                    cafe_sum_1000_min_price_avg
+                    cafe_sum_1000_max_price_avg
+                    cafe_avg_price_1000
+                    cafe_sum_1500_min_price_avg
+                    cafe_sum_1500_max_price_avg
+                    cafe_avg_price_1500
+                    cafe_sum_2000_min_price_avg
+                    cafe_sum_2000_max_price_avg
+                    cafe_avg_price_2000
+                    cafe_sum_3000_min_price_avg
+                    cafe_sum_3000_max_price_avg
+                    cafe_avg_price_3000
+                    cafe_sum_5000_min_price_avg
+                    cafe_sum_5000_max_price_avg
+                    cafe_avg_price_5000
+                    prom_part_5000
+                    build_year
+                    kitch_sq
+                    material
+                    max_floor
+                    num_room
+                    state
+                    ;
+                    run;
+                    
+                    proc print data=train4 (obs=10);
+                    run;
+                    
+                    proc contents data=train4;
+                    run;
+                    
+                    proc means data=train4
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run; 
+                    
+                    proc means data = train4 n nmiss;
+                      var _numeric_;
+                    run;
+
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 4 - Model price_doc using PROC GLM and PROC GLM SELECT */
+                    
+                    /* MODEL 1 - PROC GLM and GLMSELECT with options. This model also tests for tolerance,
+                    which is a measure of multicollinearity (tolerance = 1/VIF, where VIF is the Variance
+                    Inflation Factor) After the model ran, we eliminated the variables that had tolerance
+                    levels less than 0.1 (which corresponds to a VIF of 10 or greater, thus implying 
+                    multicollinearity). We then removed these variables and ran a reduced model below */
+                    
+                    proc glm data = train4 plots=All;
+                    class 
+                    big_market_raion
+                    big_road1_1line
+                    culture_objects_top_25
+                    detention_facility_raion
+                    ecology
+                    incineration_raion
+                    nuclear_reactor_raion
+                    oil_chemistry_raion
+                    product_type
+                    radiation_raion
+                    railroad_1line
+                    railroad_termil_raion
+                    sub_area
+                    thermal_power_plant_raion
+                    water_1line
+                    ;
+                    model price_doc = 
+                    additiol_education_km
+                    additiol_education_raion
+                    area_m
+                    basketball_km
+                    big_church_count_500
+                    big_church_count_1000
+                    big_church_count_1500
+                    big_church_count_2000
+                    big_church_count_3000
+                    big_church_count_5000
+                    big_church_km
+                    big_market_km
+                    big_market_raion
+                    big_road1_1line
+                    big_road1_km
+                    big_road2_km
+                    bulvar_ring_km
+                    bus_termil_avto_km
+                    cafe_count_500
+                    cafe_count_1000
+                    cafe_count_1500
+                    cafe_count_2000
+                    cafe_count_3000
+                    cafe_count_5000
+                    cafe_count_1000__price
+                    cafe_count_1000_price_500
+                    cafe_count_1000_price_1000
+                    cafe_count_1000_price_1500
+                    cafe_count_1000_price_2500
+                    cafe_count_1000_price_4000
+                    cafe_count_1000_price_high
+                    cafe_count_1500__price
+                    cafe_count_1500_price_500
+                    cafe_count_1500_price_1000
+                    cafe_count_1500_price_1500
+                    cafe_count_1500_price_2500
+                    cafe_count_1500_price_4000
+                    cafe_count_1500_price_high
+                    cafe_count_2000__price
+                    cafe_count_2000_price_500
+                    cafe_count_2000_price_1000
+                    cafe_count_2000_price_1500
+                    cafe_count_2000_price_2500
+                    cafe_count_2000_price_4000
+                    cafe_count_2000_price_high
+                    cafe_count_3000__price
+                    cafe_count_3000_price_500
+                    cafe_count_3000_price_1000
+                    cafe_count_3000_price_1500
+                    cafe_count_3000_price_2500
+                    cafe_count_3000_price_4000
+                    cafe_count_3000_price_high
+                    cafe_count_5000__price
+                    cafe_count_5000_price_500
+                    cafe_count_5000_price_1000
+                    cafe_count_5000_price_1500
+                    cafe_count_5000_price_2500
+                    cafe_count_5000_price_4000
+                    cafe_count_5000_price_high
+                    cafe_count_500__price
+                    cafe_count_500_price_500
+                    cafe_count_500_price_1000
+                    cafe_count_500_price_1500
+                    cafe_count_500_price_2500
+                    cafe_count_500_price_4000
+                    cafe_count_500_price_high
+                    catering_km
+                    cemetery_km
+                    children_preschool
+                    children_school
+                    church_count_500
+                    church_count_1000
+                    church_count_1500
+                    church_count_2000
+                    church_count_3000
+                    church_count_5000
+                    church_sygogue_km
+                    culture_objects_top_25
+                    culture_objects_top_25_raion
+                    detention_facility_km
+                    detention_facility_raion
+                    ecology
+                    ekder_all
+                    ekder_female
+                    ekder_male
+                    exhibition_km
+                    female_f
+                    fitness_km
+                    full_all
+                    full_sq
+                    green_part_500
+                    green_part_1000
+                    green_part_1500
+                    green_part_2000
+                    green_part_3000
+                    green_part_5000
+                    green_zone_km
+                    green_zone_part
+                    group_0_13_all
+                    group_0_13_female
+                    group_0_13_male
+                    group_0_17_all
+                    group_0_17_female
+                    group_0_17_male
+                    group_0_6_all
+                    group_0_6_female
+                    group_0_6_male
+                    group_16_29_all
+                    group_16_29_female
+                    group_16_29_male
+                    group_7_14_all
+                    group_7_14_female
+                    group_7_14_male
+                    healthcare_centers_raion
+                    hospice_morgue_km
+                    ice_rink_km
+                    id
+                    incineration_km
+                    incineration_raion
+                    indust_part
+                    industrial_km
+                    kindergarten_km
+                    kremlin_km
+                    leisure_count_500
+                    leisure_count_1000
+                    leisure_count_1500
+                    leisure_count_2000
+                    leisure_count_3000
+                    leisure_count_5000
+                    male_f
+                    market_count_500
+                    market_count_1000
+                    market_count_1500
+                    market_count_2000
+                    market_count_3000
+                    market_count_5000
+                    market_shop_km
+                    metro_km_avto
+                    metro_min_avto
+                    mkad_km
+                    mosque_count_500
+                    mosque_count_1000
+                    mosque_count_1500
+                    mosque_count_2000
+                    mosque_count_3000
+                    mosque_count_5000
+                    mosque_km
+                    museum_km
+                    build_year
+                    cafe_avg_price_500
+                    cafe_avg_price_1000
+                    cafe_avg_price_1500
+                    cafe_avg_price_2000
+                    cafe_avg_price_3000
+                    cafe_avg_price_5000
+                    cafe_sum_1000_max_price_avg
+                    cafe_sum_1000_min_price_avg
+                    cafe_sum_1500_max_price_avg
+                    cafe_sum_1500_min_price_avg
+                    cafe_sum_2000_max_price_avg
+                    cafe_sum_2000_min_price_avg
+                    cafe_sum_3000_max_price_avg
+                    cafe_sum_3000_min_price_avg
+                    cafe_sum_5000_max_price_avg
+                    cafe_sum_5000_min_price_avg
+                    cafe_sum_500_max_price_avg
+                    cafe_sum_500_min_price_avg
+                    kitch_sq
+                    material
+                    max_floor
+                    metro_km_walk
+                    metro_min_walk
+                    num_room
+                    preschool_quota
+                    prom_part_5000
+                    railroad_station_walk_km
+                    railroad_station_walk_min
+                    school_quota
+                    state
+                    nuclear_reactor_km
+                    nuclear_reactor_raion
+                    office_count_500
+                    office_count_1000
+                    office_count_1500
+                    office_count_2000
+                    office_count_3000
+                    office_count_5000
+                    office_km
+                    office_raion
+                    office_sqm_500
+                    office_sqm_1000
+                    office_sqm_1500
+                    office_sqm_2000
+                    office_sqm_3000
+                    office_sqm_5000
+                    oil_chemistry_km
+                    oil_chemistry_raion
+                    park_km
+                    power_transmission_line_km
+                    preschool_km
+                    product_type
+                    prom_part_500
+                    prom_part_1000
+                    prom_part_1500
+                    prom_part_2000
+                    prom_part_3000
+                    ps_educ_centers_raion
+                    pub_trans_stn_min_walk
+                    public_healthcare_km
+                    public_transport_station_km
+                    radiation_km
+                    radiation_raion
+                    railroad_1line
+                    railroad_km
+                    railroad_station_avto_km
+                    railroad_station_avto_min
+                    railroad_termil_raion
+                    raion_popul
+                    s_educ_centers_top20_raion
+                    sadovoe_km
+                    school_education_centers_raion
+                    school_km
+                    shopping_centers_km
+                    shopping_centers_raion
+                    sport_count_500
+                    sport_count_1000
+                    sport_count_1500
+                    sport_count_2000
+                    sport_count_3000
+                    sport_count_5000
+                    sport_objects_raion
+                    stadium_km
+                    sub_area
+                    swim_pool_km
+                    theater_km
+                    thermal_power_plant_km
+                    thermal_power_plant_raion
+                    timestamp
+                    trc_count_500
+                    trc_count_1000
+                    trc_count_1500
+                    trc_count_2000
+                    trc_count_3000
+                    trc_count_5000
+                    trc_sqm_500
+                    trc_sqm_1000
+                    trc_sqm_1500
+                    trc_sqm_2000
+                    trc_sqm_3000
+                    trc_sqm_5000
+                    ts_km
+                    ttk_km
+                    university_km
+                    university_top_20_raion
+                    water_1line
+                    water_km
+                    water_treatment_km
+                    work_all
+                    work_female
+                    work_male
+                    workplaces_km
+                    young_all
+                    young_female
+                    young_male
+                    zd_vokzaly_avto_km;
+                    run;
+                    
+                    /* alternate settings for proc glmselect
+                    
+                    /selection=stepwise(stop=cv) cvmethod=random(10);
+                    /selection=forward(stop=cv) cvmethod=random(10);
+                    /selection=backward(stop=cv) cvmethod=random(10);
+                    /selection=stepwise(select=SL SLE=0.1 SLS=0.08 choose=AIC);
+                    /selection=stepwise(select=SL stop=SBC);
+                    /selection=stepwise(select=AICC drop=COMPETITIVE);
+                    /selection=LASSO;
+                    /selection=LARS;
+                    */
+
+
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 5 - Reduced model, after testing for multicollinearity */
+                    
+                    /* this is the reduced model - from above tolerance test for multicollinearity */
+                    
+                    proc glmselect data = train4 plots=All;
+                    class 
+                    big_market_raion
+                    big_road1_1line
+                    culture_objects_top_25
+                    detention_facility_raion
+                    ecology
+                    incineration_raion
+                    nuclear_reactor_raion
+                    oil_chemistry_raion
+                    product_type
+                    radiation_raion
+                    railroad_1line
+                    railroad_termil_raion
+                    sub_area
+                    thermal_power_plant_raion
+                    water_1line
+                    ;
+                    model price_doc =
+                    additiol_education_km
+                    additiol_education_raion
+                    area_m
+                    basketball_km
+                    big_church_count_1000
+                    big_church_count_500
+                    big_church_km
+                    big_market_km
+                    big_market_raion
+                    big_road1_1line
+                    big_road1_km
+                    big_road2_km
+                    build_year
+                    bus_termil_avto_km
+                    cafe_avg_price_1000
+                    cafe_avg_price_1500
+                    cafe_avg_price_2000
+                    cafe_avg_price_3000
+                    cafe_avg_price_500
+                    cafe_avg_price_5000
+                    cafe_count_500
+                    catering_km
+                    cemetery_km
+                    children_preschool
+                    church_sygogue_km
+                    culture_objects_top_25 
+                    detention_facility_km
+                    detention_facility_raion
+                    ecology
+                    ekder_all
+                    female_f
+                    fitness_km
+                    full_sq
+                    green_part_1000
+                    green_part_1500
+                    green_part_500
+                    green_zone_km
+                    green_zone_part
+                    healthcare_centers_raion
+                    hospice_morgue_km
+                    ice_rink_km
+                    id
+                    incineration_km
+                    incineration_raion
+                    indust_part
+                    industrial_km
+                    kitch_sq
+                    leisure_count_500
+                    market_count_1000
+                    market_count_1500
+                    market_count_2000
+                    market_count_3000
+                    market_count_500
+                    market_shop_km
+                    material
+                    max_floor
+                    mosque_count_1000
+                    mosque_count_1500
+                    mosque_count_2000
+                    mosque_count_3000
+                    mosque_count_500
+                    mosque_count_5000
+                    nuclear_reactor_raion
+                    num_room
+                    office_count_500
+                    office_sqm_1000
+                    office_sqm_500
+                    oil_chemistry_raion
+                    preschool_quota
+                    product_type
+                    prom_part_1000
+                    prom_part_500
+                    prom_part_5000
+                    radiation_raion
+                    railroad_1line
+                    railroad_station_walk_km
+                    railroad_termil_raion
+                    s_educ_centers_top20_raion
+                    shopping_centers_raion
+                    sport_count_1000
+                    sport_count_500
+                    state
+                    sub_area
+                    trc_count_500
+                    trc_sqm_1000
+                    trc_sqm_1500
+                    trc_sqm_2000
+                    trc_sqm_500
+                    water_1line
+                    water_km
+                    /selection=stepwise(select=SL SLE=0.1 SLS=0.08 choose=AIC);
+                    ;
+                    run;
+                    
+                    /* alternate settings for proc glmselect
+                    /selection=stepwise(stop=cv) cvmethod=random(10);
+                    /selection=forward(stop=cv) cvmethod=random(10);
+                    /selection=backward(stop=cv) cvmethod=random(10);
+                    /selection=stepwise(select=SL SLE=0.1 SLS=0.08 choose=AIC);
+                    /selection=stepwise(select=SL stop=SBC);
+                    /selection=stepwise(select=AICC drop=COMPETITIVE);
+                    /selection=LASSO;
+                    /selection=LARS;
+                    */
+                    
+                    
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 6 - Import test data for prediction model */
+                    
+                    /* import test data */
+                    
+                    proc import datafile="/home/allen_crane0/Btest.csv"  /*You will need to change the path or use the import wizard.*/
+                              dbms=dlm out=test replace;
+                         delimiter=',';
+                         getnames=yes;
+                    run;
+                    
+                    proc print data=test (obs=10);
+                    run;
+                    
+                    proc contents data=test;
+                    run;
+                    
+                    proc print data=test (obs=10);
+                    run;
+                    
+                    /* test version of same step as train file: this step shortens long >32 char variable names 
+                    and renames variables that start with a number */
+                    
+                    options validvarname=any;
+                    data test;
+                    set test;
+                    rename preschool_education_centers_raio='ps_educ_centers_raion'n;
+                    rename school_education_centers_top_20_='s_educ_centers_top20_raion'n;
+                    rename raion_build_count_with_material_='raion_bld_cnt_material_info'n;
+                    rename public_transport_station_min_wal ='pub_trans_stn_min_walk'n; 
+                    run;
+                    
+                    options validvarname=any;
+                    data test;
+                    set test (rename=('0_6_all'n='group_0_6_all'n 
+                    '0_6_male'n='group_0_6_male'n
+                    '0_6_female'n='group_0_6_female'n 
+                    '7_14_all'n='group_7_14_all'n
+                    '7_14_male'n='group_7_14_male'n
+                    '7_14_female'n='group_7_14_female'n
+                    '0_17_all'n='group_0_17_all'n
+                    '0_17_male'n='group_0_17_male'n
+                    '0_17_female'n='group_0_17_female'n
+                    '16_29_all'n='group_16_29_all'n
+                    '16_29_male'n='group_16_29_male'n
+                    '16_29_female'n='group_16_29_female'n 
+                    '0_13_all'n='group_0_13_all'n
+                    '0_13_male'n='group_0_13_male'n 
+                    '0_13_female'n='group_0_13_female'n));
+                    run;
+                    
+                    options validvarname=any;
+                    data test;
+                    set test (rename=('build_count_1921-1945'n='build_count_1921_1945'n
+                    'build_count_1946-1970'n='build_count_1946_1970'n
+                    'build_count_1971-1995'n='build_count_1971_1995'n));
+                    run;
+                    
+                    /* we do not need to set test data fields as numeric, they already are */ 
+                    
+                    
+                    /* this step uses PROC MI to impute missing values */
+                    
+                    proc mi data=test seed=501213 mu0=0 out=test4;
+                    var 
+                    life_sq
+                    floor
+                    preschool_quota
+                    school_quota
+                    green_part_2000
+                    hospital_beds_raion
+                    raion_bld_cnt_material_info
+                    build_count_block
+                    build_count_wood
+                    build_count_frame
+                    build_count_brick
+                    build_count_monolith
+                    build_count_panel
+                    build_count_foam
+                    build_count_slag
+                    build_count_mix
+                    raion_build_count_with_builddate
+                    build_count_before_1920
+                    build_count_1921_1945
+                    build_count_1946_1970
+                    build_count_1971_1995
+                    build_count_after_1995
+                    metro_min_walk
+                    metro_km_walk
+                    railroad_station_walk_km
+                    railroad_station_walk_min
+                    id_railroad_station_walk
+                    cafe_sum_500_min_price_avg
+                    cafe_sum_500_max_price_avg
+                    cafe_avg_price_500
+                    cafe_sum_1000_min_price_avg
+                    cafe_sum_1000_max_price_avg
+                    cafe_avg_price_1000
+                    cafe_sum_1500_min_price_avg
+                    cafe_sum_1500_max_price_avg
+                    cafe_avg_price_1500
+                    cafe_sum_2000_min_price_avg
+                    cafe_sum_2000_max_price_avg
+                    cafe_avg_price_2000
+                    cafe_sum_3000_min_price_avg
+                    cafe_sum_3000_max_price_avg
+                    cafe_avg_price_3000
+                    cafe_sum_5000_min_price_avg
+                    cafe_sum_5000_max_price_avg
+                    cafe_avg_price_5000
+                    prom_part_5000
+                    build_year
+                    kitch_sq
+                    material
+                    max_floor
+                    num_room
+                    state
+                    ;
+                    run;
+                    
+                    proc print data=test4 (obs=10);
+                    run;
+                    
+                    proc means data = test4 n nmiss;
+                      var _numeric_;
+                    run;
+                    
+                    proc means data=test4
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run; 
+                    
+                    /* add empty predicted response field */
+                    
+                    data test4;
+                    set test4;
+                    price_doc = .;
+                    ;                   
+
+
+
+
+                    MSDS 6372 - Applied Statistics: Inference and Modeling
+                    Dr. Anthony Tanaydin
+                    By Allen Crane and Brock Friedrich
+                    October 10, 2018
+                    
+                    
+                    
+                    /* Russian Real Estate Valuation and Prediction */
+                    /* Problem 1 Step 7 - Combine data, predict missing values, create final data set */
+                    
+                    /* combine data sets */
+                    
+                    data test5;
+                    set train4 test4;
+                    run;
+                    
+                    proc print data=test5 (obs=10);
+                    run;
+                    
+                    proc contents data=test5;
+                    run;
+                    
+                    
+                    /* predict response field (price_doc) using desired method */
+                    
+                    ods graphics on;
+                    proc glm data = test5 plots=FITPLOT;
+                    class 
+                    big_market_raion
+                    big_road1_1line
+                    culture_objects_top_25
+                    detention_facility_raion
+                    ecology
+                    incineration_raion
+                    nuclear_reactor_raion
+                    oil_chemistry_raion
+                    product_type
+                    radiation_raion
+                    railroad_1line
+                    railroad_termil_raion
+                    sub_area
+                    thermal_power_plant_raion
+                    water_1line
+                    ;
+                    model price_doc =
+                    additiol_education_km
+                    additiol_education_raion
+                    area_m
+                    basketball_km
+                    big_church_count_1000
+                    big_church_count_500
+                    big_church_km
+                    big_market_km
+                    big_market_raion
+                    big_road1_1line
+                    big_road1_km
+                    big_road2_km
+                    build_year
+                    bus_termil_avto_km
+                    cafe_avg_price_1000
+                    cafe_avg_price_1500
+                    cafe_avg_price_2000
+                    cafe_avg_price_3000
+                    cafe_avg_price_500
+                    cafe_avg_price_5000
+                    cafe_count_500
+                    catering_km
+                    cemetery_km
+                    children_preschool
+                    church_sygogue_km
+                    culture_objects_top_25
+                    detention_facility_km
+                    detention_facility_raion
+                    ecology
+                    ekder_all
+                    female_f
+                    fitness_km
+                    full_sq
+                    green_part_1000
+                    green_part_1500
+                    green_part_500
+                    green_zone_km
+                    green_zone_part
+                    healthcare_centers_raion
+                    hospice_morgue_km
+                    ice_rink_km
+                    id
+                    incineration_km
+                    incineration_raion
+                    indust_part
+                    industrial_km
+                    kitch_sq
+                    leisure_count_500
+                    market_count_1000
+                    market_count_1500
+                    market_count_2000
+                    market_count_3000
+                    market_count_500
+                    market_shop_km
+                    material
+                    max_floor
+                    mosque_count_1000
+                    mosque_count_1500
+                    mosque_count_2000
+                    mosque_count_3000
+                    mosque_count_500
+                    mosque_count_5000
+                    nuclear_reactor_raion
+                    num_room
+                    office_count_500
+                    office_sqm_1000
+                    office_sqm_500
+                    oil_chemistry_raion
+                    preschool_quota
+                    product_type
+                    prom_part_1000
+                    prom_part_500
+                    prom_part_5000
+                    radiation_raion
+                    railroad_1line
+                    railroad_termil_raion
+                    s_educ_centers_top20_raion
+                    shopping_centers_raion
+                    sport_count_1000
+                    sport_count_500
+                    state
+                    sub_area
+                    trc_count_500
+                    trc_sqm_1000
+                    trc_sqm_1500
+                    trc_sqm_2000
+                    trc_sqm_500
+                    water_1line
+                    water_km
+                    ;
+                    output out = results p = Predict;
+                    run;
+                    ods graphics off;
+                    
+                    /* alternate settings for proc glmselect
+                    /selection=stepwise(stop=cv) cvmethod=random(10);
+                    /selection=forward(stop=cv) cvmethod=random(10);
+                    /selection=backward(stop=cv) cvmethod=random(10);
+                    /selection=stepwise(select=SL SLE=0.1 SLS=0.08 choose=AIC);
+                    /selection=stepwise(select=SL stop=SBC);
+                    /selection=stepwise(select=AICC drop=COMPETITIVE);
+                    /selection=LASSO;
+                    /selection=LARS;
+                    */
+                    
+                    proc means data = results n nmiss;
+                      var _numeric_;
+                    run;
+                    
+                    proc print data=results (obs=10);
+                    where id > 30473; 
+                    run;
+                    
+                    proc contents data=results; 
+                    run;
+                    
+                    proc means data=results
+                        N Mean Std Min Q1 Median Q3 Max;
+                    run; 
+                    
+                    /* this is the final step that maps the predicted value into the price_doc variable
+                    and then drops all variables except id and price_doc. Note: due to PROC MI, we have
+                    many thousand more observations than we were asked to produce for the test data */
+                    
+                    data results_final_sbc;
+                    set results;
+                    if price_doc < 1 then price_doc = predict;
+                    keep id price_doc;
+                    where id between 30474 and 38135; 
+                    run;
+                    
+                    proc print data=results_final_sbc (obs=100);
+                    run;
+                    
+                    proc contents data=results_final_sbc; 
+                    run;
+                    
+                    
+                    
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </code></pre>
+            
+            
+            
+            </div>
+
+
+
+        <hr class="" style = "page-break-after: always;"/>
+        <!-- SECTION: Appendix -->
+        <div id="container-header" class="container-fluid">
+            <!-- <hr class="pagebreak bg-primary" style = "page-break-after: always;"/> -->
+            <br />
+            <div class="row">
+                <div class="section-label">Appendix: Objective #2</div>
+
+<pre><code>
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
+import numpy as np
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from scipy import stats
+os.getcwd()
+# Pandas global config
+pd.options.display.max_rows = None
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+pd.set_option('large_repr', 'truncate')
+pd.set_option('precision',2)
+# Matplotlib global config
+plt.rcParams.update({'legend.fontsize': 'x-large',
+            'figure.figsize': (20, 10),
+            'axes.labelsize': 'x-large',
+            'axes.titlesize':'xx-large',
+            'xtick.labelsize':'x-large',
+            'ytick.labelsize':'x-large',
+            'savefig.dpi' : 300,
+            'savefig.format' : 'png',
+            'savefig.transparent' : True,
+            'axes.labelpad' : 10,
+            'axes.titlepad' : 10,
+            'axes.titleweight': 'bold'
+            })
+plt.style.use('seaborn-deep')
+#print(plt.style.available)
+# plt.rcParams.update(plt.rcParamsDefault)
+# plt.rcParams.keys()
+
+# short_currency(100000)
+
+ruble = u'\u20BD' #'&#8381;'
+
+def short_currency(amt: float) -> float:
+        sign = '' if amt >= 0 else '-'
+        amt = float(abs(amt))
+        M = 1000000.0
+        K = 1000.0
+        div = 1
+        divname = ''
+        
+        if amt >= M:
+                div = M
+                divname = 'M'
+        elif amt >= K:
+                div = K
+                divname = 'K'
+        return '{sign}{ruble} {:.1f} {divname}'.format(amt/div, divname = divname, sign = sign, ruble = ruble)
+
+tform_currency = plt.FuncFormatter(lambda x, p: short_currency(x))
+
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from pandas.plotting import lag_plot, autocorrelation_plot, table, scatter_matrix, boxplot
+
+
+
+
+
+
+#! Resources
+# http://www.statsmodels.org/stable/examples/notebooks/generated/tsa_arma_0.html
+
+train = pd.read_csv('data/train.csv')
+
+
+
+
+
+# Summarize Features
+htmlname = 'table-train-describe'
+train.describe().T.to_html(open('html/{htmlname}.html'.format(htmlname = htmlname), 'w')
+                                , table_id = htmlname)
+# Data Type Counts
+train.get_dtype_counts()
+train.timestamp = pd.to_datetime(train.timestamp)
+train['year'] = train.timestamp.apply(lambda x: (x.year))
+train['month'] = train.timestamp.apply(lambda x: (x.month))
+train['day'] = train.timestamp.apply(lambda x: (x.day))
+train['yearmonth'] = train.timestamp.apply(lambda x:
+                ('{:04d}{:02d}'.format(x.year, x.month)))
+
+
+cols = ['timestamp', 'year', 'month', 'day', 'yearmonth', 'price_doc']
+subtrain = train[cols].copy(deep = True)
+
+# Add logged price feature
+subtrain['price_log'] = np.log(subtrain.price_doc)
+
+
+with open('html/subtrain-describe.html', 'w') as f:
+        f.write(
+                (
+                subtrain.groupby('year')['price_doc', 'price_log']
+                .describe()
+                .T
+                .to_html()
+                )
+                )
+
+ym = subtrain.yearmonth.unique()
+subtrain[['price_doc', 'year']].groupby('year').describe()
+
+# Price Boxplots by Year
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,8), sharex = True)
+subtrain[['price_log', 'year']].boxplot(by = 'year', ax = ax2)
+subtrain[['price_doc', 'year']].boxplot(by = 'year', ax = ax1)
+ax2.yaxis.tick_right()
+ax1.xaxis.set_label_text("Year")
+ax2.xaxis.set_label_text("Year")
+ax1.yaxis.set_major_formatter(tform_currency)
+
+fig.savefig('figs/price-boxplot.png')
+
+
+joint = sns.JointGrid(x = subtrain.year.values, y = subtrain.price_doc.values)
+joint = joint.plot_joint(sns.boxplot)
+joint = joint.plot_marginals(sns.distplot, color = '#15D888')
+# joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False, bins = 10)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
+
+# sns.lmplot(x = 'yearmonth', y = 'de')
+
+# dir(ax1.yaxis)
+
+# plt.Axes.set_label
+
+subtrain[['year', 'month', 'day']] = subtrain[['year', 'month', 'day']].astype('object')
+
+
+
+
+
+subtrain = subtrain.set_index('timestamp')
+subtrain = subtrain.resample('M').mean()
+subtrain = subtrain.sort_index()
+subtrain['month_number'] = range(1, len(subtrain) + 1)
+subtrain.head()
+
+X = subtrain.month_number.values
+Y = subtrain.price_doc.values
+Y_log = subtrain.price_log.values
+
+
+# sns.set_style("seaborn-deep")
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(  subtrain.index.values
+        , Y_log
+        , linewidth=2
+        # , linestyle=':'
+        , marker='o'
+        )
+ax.set_title('log(Price) v Months')
+ax.set_xlabel('Months')
+ax.set_ylabel('log(Price)')
+fig.savefig('figs/price_log-series.png')
+# ax.yaxis.set_major_formatter(tform_currency)
+# fig.savefig('figs/p2-3_price-v-months.png')
+
+# rubles
+# (subtrain.mean()/subtrain.sum()).price_doc
+
+# x = 6000000*.0212*0.15
+# for y in range(1, 47):
+#  x = x+x*.0212
+# x
+
+# subtrain[['price_doc', 'price_log']].hist(bins = 15)
+# subtrain[['price_doc', 'price_log']].qqplot()
+
+# df = subtrain.replace(np.nan, 0)
+# df.index = df.index.date
+
+# # Lag Plots
+fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=True, figsize=(24,16))
+lag_plot(subtrain['price_log'], lag=1, ax=ax1)
+lag_plot(subtrain['price_log'], lag=5, ax=ax2)
+lag_plot(subtrain['price_log'], lag=15, ax=ax3)
+ax1.set_title('Lag Plots of log(Price)')
+ax1.annotate('Lag = 1', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+ax2.annotate(' Lag = 2', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+ax3.annotate('Lag = 3', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+plt.show()
+fig.savefig('figs/price-log-lagplots.png')
+
+# plt.figure()
+# ax2 = lag_plot(np.log(subtrain['price_doc']), lag=1)
+
+# plt.show()
+
+
+# plt.figure()
+# lag_plot(np.log(df['price_doc']), lag=3)
+# plt.show()
+
+# plt.figure()
+# boxplot(np.log(subtrain['price_doc']), by = 'year')
+# plt.show()
+
+fig, ax = plt.subplots(figsize=(24,16))
+ax.set_title('Home Price AR Plot')
+x = autocorrelation_plot(subtrain['price_doc'])
+plt.show()
+fig.savefig('figs/home-price-ar-plot.png')
+
+
+# Price qq plots
+fig, (ax1, ax2) = plt.subplots(2, figsize=(24,16))
+sm.qqplot(subtrain.price_doc.values, line = 'q', ax = ax1)
+sm.qqplot(subtrain.price_log.values, line = 'q', ax = ax2)
+ax1.set_title("Price and log(Price) QQ-Plot")
+ax1.yaxis.set_label("Price")
+ax1.annotate('Price', xy = (.005,.95), xycoords = "axes fraction", fontsize=12)
+ax1.annotate('log(Price)', xy = (.005,.95), xycoords = "axes fraction", fontsize=12)
+fig.savefig('figs/price-qq.png')
+
+
+# Price Histograms
+fig, (ax1, ax2) = plt.subplots(2, figsize=(24,16))
+sns.distplot(subtrain.price_doc.values, axlabel = 'Price', kde = True, bins = 10, ax = ax1, norm_hist = True)
+sns.distplot(subtrain.price_log.values, axlabel = 'Log(Price)', kde = True, bins = 10, ax = ax2, norm_hist = True)
+ax1.set_title('Density of Price and Log(Price)')
+ax1.xaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/price-hist.png')
+
+#! Problem 2-3
+# sns.set_style("seaborn-deep")
+fig, ax = plt.subplots(figsize=(12,8))
+ax.plot(X, Y
+        , linewidth=2
+        # , linestyle=':'
+        , marker='o'
+        )
+ax.set_title('Price v Months')
+ax.set_xlabel('Months')
+ax.set_ylabel('Price')
+ax.yaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/p2-3_price-v-months.png')
+
+joint = sns.JointGrid(x = subtrain.month_number.values, y = subtrain.price_doc.values)
+joint = joint.plot_joint(sns.scatterplot, color = '#15D888')
+joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False, bins = 10)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
+
+
+# sns.boxplot(data = subtrain.price_log)
+# import pprint
+# import numpy as np
+
+# # Plotly
+# import plotly.plotly as py
+# import plotly.tools as tls
+# from plotly.graph_objs import *
+# import plotly.offline as offline
+# import plotly.graph_objs as go
+
+# pp = pprint.PrettyPrinter(indent=4)
+
+# plotly_fig = tls.mpl_to_plotly(fig)
+# pp.pprint(plotly_fig['layout'])
+# offline.plot(plotly_fig, filename='figs/name.html')
+
+
+
+
+
+
+
+#! Problem 2-4
+
+##? Part a
+
+# OLS Regression Model
+reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
+
+# OLS Model Summary
+# TODO: Capture output for report
+reg.summary()
+
+# reg._results.mse_model
+# reg._results.mse_resid
+# reg._results.mse_total
+
+
+with open('html/p2-4_ols_summary.html', 'w') as f:
+        f.write(reg._results.summary2().as_html())
+
+
+# line_plot, ax = plt.subplots(figsize=(12, 8))
+# ax = sns.scatterplot(x = reg._results.get_influence().cooks_distance[0]
+#                 , y = reg._results.get_influence().cooks_distance[1]
+#                 , ax = ax)
+# ax.set_title('Influence')
+
+sns.lm
+
+
+# FIXME: Fix annotations
+# influence_plot, ax = plt.subplots(figsize=(12,8))
+influence_plot = sm.graphics.influence_plot(reg, criterion="cooks", obs_labels = False)
+influence_plot.savefig('figs/p2-4a_influence_plot.png')
+influence_plot.properties()
+
+# Regression plots
+reg_plot = sm.graphics.plot_regress_exog(reg, "month_number")
+for ax in reg_plot.axes:
+        ax.yaxis.set_major_formatter(tform_currency)
+reg_plot.savefig('figs/p2-4a_reg_plot.png')
+
+# reg_plot.axes[0].properties()
+# reg_plot.properties()
+
+# Partials
+# FIXME: Format labels and tick marks
+preg_plot, ax = plt.subplots(figsize=(12,8))
+preg_plot = sm.graphics.plot_partregress_grid(reg, fig=preg_plot)
+preg_plot.savefig('figs/p2-4a_preg_plot.png')
+
+
+# Fit Plots
+# FIXME: Format labels and tick marks
+fit_plot, ax = plt.subplots(figsize=(12, 8))
+fit_plot = sm.graphics.plot_fit(reg, "month_number", ax=ax)
+fit_plot.savefig('figs/p2-4a_fit_plot.png')
+
+# df = subtrain.reset_index()
+
+# fit_plot, ax = plt.subplots(figsize=(12, 8))
+fit_plot =  sns.lmplot(x='month_number' , y='price_doc' , data=subtrain.reset_index())
+fit_plot.axes[0][0].yaxis.set_major_formatter(tform_currency)
+fit_plot.savefig('figs/fit_plot.png')
+
+# dir(fit_plot.axes[0][0])
+
+
+# fit_plot, ax = plt.subplots(figsize=(12, 8))
+# fit_plot = sns.jointplot(x='month_number' , y='price_doc' , data=subtrain.reset_index(), kind="reg")
+# fit_plot = fit_plot.plot_marginals(sns.distplot, color = '#15D888', kde = False, ax=ax)
+ax.yaxis.set_major_formatter(tform_currency)
+
+
+##? Part b
+
+# Join OLS residuals to original data
+subtrain = subtrain.join(reg.resid.rename('resid'))
+
+# Capture OLS residuals for use in later steps
+R = subtrain.resid.values
+
+# Plot OLS residuals as series
+# FIXME: Format labels and tick marks
+line_plot, ax = plt.subplots(figsize=(12, 8))
+ax = sns.lineplot(x = X
+            , y = subtrain.resid.values
+            , ax = ax
+            , markers = True)
+ax.set_title('Residuals')
+ax.set_xlabel('Months')
+ax.set_ylabel('Price')
+line_plot.savefig('figs/p2-4b_line_plot.png')
+
+# doc: https://seaborn.pydata.org/generated/seaborn.JointGrid.html#seaborn.JointGrid
+
+# OLS Residuals join distribution + scatterplot
+# FIXME: Formatting. All of it. Add title and labels. Format y.
+joint = sns.JointGrid(x = X, y = subtrain.resid.values)
+joint = joint.plot_joint(sns.scatterplot, color = '#15D888')
+joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
+# rsq = lambda a, b: stats.pearsonr(a, b)[0] ** 2
+# g = g.annotate(rsq, template="{stat}: {val:.2f}",
+#                         stat="$R^2$", loc="upper left", fontsize=12)
+# g.ax_joint.get_lines()[0].set_color('#D81565')
+
+
+##? Part c
+
+
+# Plot autocorrelation of OLS residuals
+# doc: https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.add_subplot
+f, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=False, figsize=(24,16))
+ax1 = sm.graphics.tsa.plot_acf(subtrain.resid.values.squeeze(), lags=40, ax=ax1)
+ax2 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax2, method = 'ols')
+ax3 = sm.graphics.tsa.plot_pacf(subtrain.resid.values.squeeze(), lags=40, ax=ax3, method = 'yw')
+f.savefig('figs/p2-4c_tsa_ar.png')
+
+
+# Autoregress OLS residuals
+# doc: http://www.statsmodels.org/stable/generated/statsmodels.tsa.ar_model.AR.html#statsmodels.tsa.ar_model.AR
+#** What p results in the best fit?
+ts = sm.tsa.AR(subtrain.resid, dates = subtrain.index).fit(maxlag = 3)
+
+# coefs
+
+# AR Model Summary
+# TODO: Export for report
+ts.Summary =(ts.params.rename('param_est').to_frame()
+                        .join(ts.tvalues.rename('t'))
+                        .join(ts.pvalues.rename('p > |t|'))
+                        .join(ts.conf_int().rename({0 : 'lcl',1 : 'ucl'}, axis = 1))
+                        .join(ts.bse.rename('se'))
+            )
+
+
+
+# Capture Information Criterion
+# TODO: Export for report
+ts.ics = pd.DataFrame({
+        'AIC' : [ts.aic]
+        ,'BIC' : [ts.bic]
+        ,'Durbin-Watson' : sm.stats.durbin_watson(ts.resid.values)
+        }).squeeze()
+
+# Check normality of ts residuals
+stats.normaltest(ts.resid)
+
+# Plot AR qqplot
+# FIXME: Format
+fig = plt.figure(figsize=(12,8))
+ax = fig.add_subplot(111)
+fig = sm.graphics.qqplot(ts.resid, line='q', ax=ax, fit=True)
+fig.savefig('figs/p2-4c_tsa_qqplot.png')
+
+# Plot AR residuals
+# FIXME: Format
+fig = plt.figure(figsize=(12,8))
+ax = fig.add_subplot(111)
+ax = ts.resid.plot(ax=ax)
+ax.set_title("AR Residuals")
+fig.savefig('figs/p2-4c_tsa_resid.png')
+
+# Plot AR Residuals
+# FIXME: Format
+fig = plt.figure(figsize=(12,8))
+ax1 = fig.add_subplot(211)
+fig = sm.graphics.tsa.plot_acf(ts.resid, lags=40, ax=ax1)
+ax2 = fig.add_subplot(212)
+fig = sm.graphics.tsa.plot_pacf(ts.resid, lags=40, ax=ax2)
+fig.savefig('figs/p2-4c_tsa_acf+pacf.png')
+
+##? Part d
+# doc: http://www.statsmodels.org/stable/generated/statsmodels.tsa.ar_model.AR.predict.html#statsmodels.tsa.ar_model.AR.predict
+
+
+#? Forecast residuals using OLS
+p_start = pd.Timestamp(year = 2015, month = 6, day = 30, freq = 'M')
+p_end = pd.Timestamp(year = 2016, month = 8, day = 31) #pd.Timestamp(year = 2016, month = 6, day = 30, freq = 'M')
+d_start = subtrain.index.min()
+
+# Define interval to predict
+# TODO: Make this less convoluted
+p_range = list(range(subtrain.month_number.max(), subtrain.month_number.max() + 12))
+p_dt_range = pd.date_range(subtrain.index.max() + 1, periods=12, freq='M')
+pred_range = pd.DataFrame(p_range).rename({0 : 'month_number'}, axis = 1)
+p_dt_range = pd.DataFrame(p_dt_range).join(pred_range).set_index(0)
+
+# In-sample prediction
+p_in = ts.predict() # offset by number of auto regressors
+
+# Out-of-sample prediction
+p_out = ts.predict(start = p_start, end = p_end)
+
+# Stack prediction sets together for plotting
+predX = np.hstack((X, pred_range.month_number.values))
+predY = np.hstack((p_in, p_out))
+
+# reg.get_prediction().summary_frame(alpha = 0.05)
+reg.get_prediction(p_dt_range).summary_frame(alpha = 0.05).to_html()
+
+pd.DataFrame({'month_number': predX, 'pred_price': predY}).to_csv('html/ols_predictions.csv')
+
+# Plot OLS predictions
+# FIXME: Format
+fig = plt.figure()
+fig = sns.scatterplot(X, R, label="Data")
+fig = sns.lineplot(predX, predY, label="OLS prediction", color = 'red')
+fig.savefig('figs/p2-4d_ols_predict.png')
+
+
+# #? Forecast residuals using ARMA (for fun?)
+# arma = sm.tsa.ARMA(subtrain.resid, (4,0), dates = subtrain.index).fit(maxlag = 3)
+
+# # FIXME: Format
+# fig, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
+# ax1 = subtrain.resid.loc[d_start:].plot(ax=ax1)
+# ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1)
+# ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
+# fig.savefig('figs/p2-4d_arma_predict.png')
+
+#! Problem 5
+
+#? Forecast price using OLS
+# Define forecast interval bounds
+p_start = pd.Timestamp(year = 2015, month = 7, day = 31)
+p_end = pd.Timestamp(year = 2016, month = 6, day = 30)
+
+# Capture mean predictions
+# TODO: Refactor
+in_means = reg.get_prediction().summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
+pred_means = reg.get_prediction(pred_range).summary_frame(alpha = 0.05).drop('mean_se', axis = 1)['mean']
+
+# In-sample prediction
+p_in = reg.predict(subtrain.month_number).values
+
+# Out-of-sample prediction
+p_out = ts.predict(start = p_start, end = p_end)
+
+# Stack prediction sets for plotting
+predX = np.hstack((X, pred_range.month_number.values))
+predY = np.hstack((p_in, p_out))
+
+# Plot predict prices for ols predicted mean and AR predicted residuals
+# FIXME: This section is hacked together. Use reg.get_prediciton output instead and fix plots.
+fig, ax = plt.subplots()
+ax.plot(X, Y, 'o', label="Data")
+ax.plot(X, in_means.values, 'r', label="OLS prediction")
+ax.plot(pred_range.month_number.values, pred_means.values+p_out.values, 'g', label="OLS prediction")
+ax.legend(loc="best")
+fig.savefig('figs/p2-5d_ar_predict.png')
+
+# pd.DataFrame({'month_number': predX, 'pred_price': predY}).to_csv('html/ols_predictions.csv')
+
+# TODO: Refactor -> This is duplicated from above
+in_means = reg.get_prediction().summary_frame(alpha = 0.05)
+out_means = reg.get_prediction(p_dt_range).summary_frame(alpha = 0.05).join(p_dt_range.reset_index()).set_index(0)
+pred = pd.concat([in_means, out_means]).drop('month_number', axis = 1)
+
+
+# Plot predictions with CIs
+# TODO: Finish this plot
+pred[['mean','mean_ci_lower', 'mean_ci_upper']].plot()
+
+# TODO: Refactor -> More duplication in an effort to hack it.
+pred2 = pred[['mean','mean_ci_lower', 'mean_ci_upper']].astype('float')
+pred2.index = pd.to_datetime(pred2.index).rename('timestamp')
+
+# FIXME: Format
+# TODO: Finish this plot
+sns.tsplot([pred2.mean_ci_lower, pred2.mean_ci_upper, pred2['mean']])#, err_style="ci_bars", interpolate=False)
+# TODO: Save plot
+
+# sns.lmplot(x=pred2.mean, y=pred2.index, data=pred2, x_ci = "ci")
+
+# sm.graphics.plot_fit(reg, 0)
+# Save data for submission
+pred.round(0).to_csv('data/p2preds.csv')
+subtrain.to_csv('data/subtrain.csv')
+#? Forecast price using ARMA (for fun?)
+p = ts.predict(start = p_start, end = p_end)
+
+# Arma Model for prediction
+arma = sm.tsa.ARMA(subtrain.price_doc, (4,0), dates = subtrain.index).fit(maxlag = 3)
+
+# FIXME: Format
+# TODO: Finish this plot
+f, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
+ax1 = subtrain.price_doc.loc[d_start:].plot(ax=ax1)
+ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1, alpha = 0.05)
+ax1.axes[0].set_title("Forecast Mean Home Price")
+ax1.axes[0].yaxis.set_label_text("Home Price")
+ax1.axes[0].xaxis.set_label_text("Date")
+ax1.axes[0].yaxis.set_major_formatter(tform_currency)
+ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2, alpha = 0.05)
+ax2.axes[1].set_title("Out of Sample Prediction")
+ax2.axes[1].xaxis.set_label_text("Date")
+ax2.axes[1].yaxis.set_label_text("Home Price")
+ax2.axes[1].yaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/predict-results.png')
+# TODO: Save plot
+
+
+
+dir(ax1.axes[0])
+# sm.tsa.ARMA.fit.__dir__()
+
+
+# ts.conf_int()
+
+# pd.DataFrame.roun
+
+# type(p)
+
+# ts.model
+
+
+# dir(p)
+# dir(ts)
+# dir(ts.model)
+# dir(ts.data)
+# dir(ts.predict())
+
+# dir(ts.predict())
+
+# help(arma.plot_predict)
+
+# pd.DataFrame.mer
+
+# sm.stats.s
+
+
+
+
+# ts.summary()
+
+
+# subtrain
+
+
+# subtrain.dtypes
+
+
+# type(reg.resid)
+# dir(pd.Timestamp)
+# dir(reg)
+# dir(reg.get_influence().summary_table())
+
+
+
+
+# # Influence
+# pd.DataFrame.from_records(reg.get_influence().summary_table().data)
+
+
+# pd.DataFrame
+
+
+
+# help(sns.lineplot)
+
+
+# pd.DataFrame.sort_index
+
+# import seaborn as sns
+# sns.set(style="ticks")
+
+# # Load the example dataset for Anscombe's quartet
+# df = sns.load_dataset("iris")
+# sns.pairplot(subtrain
+#             # , hue = 'year'
+#             , diag_kind = 'kde'
+#             )
+
+
+
+# sns.lmplot(x="month_number", y="price_doc", data=subtrain)
+
+
+# # sns.set(style="whitegrid")
+
+# rs = np.random.RandomState(365)
+# values = rs.randn(365, 4).cumsum(axis=0)
+# dates = pd.date_range("1 1 2016", periods=365, freq="D")
+# data = pd.DataFrame(values, dates, columns=["A", "B", "C", "D"])
+# data = data.rolling(7).mean()
+
+# sns.lineplot(data=data, palette="tab10", linewidth=2.5)
+
+
+
+
+
+
+
+# #! OLS Prediction bands
+# # https://stackoverflow.com/questions/17559408/confidence-and-prediction-intervals-with-statsmodels
+# # iv_l and iv_u give you the limits of the prediction interval for each point.
+
+# # Prediction interval is the confidence interval for an observation and includes the estimate of the error.
+
+# # I think, confidence interval for the mean prediction is not yet available in statsmodels. (Actually, the confidence interval for the fitted values is hiding inside the summary_table of influence_outlier, but I need to verify this.)
+
+# # Proper prediction methods for statsmodels are on the TODO list.
+
+# # Addition
+
+# # Confidence intervals are there for OLS but the access is a bit clumsy.
+
+# # To be included after running your script:
+
+# # from statsmodels.stats.outliers_influence import summary_table
+
+# st, data, ss2 = summary_table(re, alpha=0.05)
+
+# fittedvalues = data[:, 2]
+# predict_mean_se  = data[:, 3]
+# predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
+# predict_ci_low, predict_ci_upp = data[:, 6:8].T
+
+# # Check we got the right things
+# print np.max(np.abs(re.fittedvalues - fittedvalues))
+# print np.max(np.abs(iv_l - predict_ci_low))
+# print np.max(np.abs(iv_u - predict_ci_upp))
+
+# plt.plot(x, y, 'o')
+# plt.plot(x, fittedvalues, '-', lw=2)
+# plt.plot(x, predict_ci_low, 'r--', lw=2)
+# plt.plot(x, predict_ci_upp, 'r--', lw=2)
+# plt.plot(x, predict_mean_ci_low, 'r--', lw=2)
+# plt.plot(x, predict_mean_ci_upp, 'r--', lw=2)
+# plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+</code></pre>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div> <!-- End container-global -->
+   

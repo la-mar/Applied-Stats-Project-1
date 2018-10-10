@@ -70,19 +70,17 @@ from pandas.plotting import lag_plot, autocorrelation_plot, table, scatter_matri
 
 train = pd.read_csv('data/train.csv')
 
+
+
+
+
 # Summarize Features
 htmlname = 'table-train-describe'
 train.describe().T.to_html(open('html/{htmlname}.html'.format(htmlname = htmlname), 'w')
                                 , table_id = htmlname)
-
-
 # Data Type Counts
 train.get_dtype_counts()
-
-
 train.timestamp = pd.to_datetime(train.timestamp)
-
-
 train['year'] = train.timestamp.apply(lambda x: (x.year))
 train['month'] = train.timestamp.apply(lambda x: (x.month))
 train['day'] = train.timestamp.apply(lambda x: (x.day))
@@ -93,7 +91,10 @@ train['yearmonth'] = train.timestamp.apply(lambda x:
 cols = ['timestamp', 'year', 'month', 'day', 'yearmonth', 'price_doc']
 subtrain = train[cols].copy(deep = True)
 
+# Add logged price feature
 subtrain['price_log'] = np.log(subtrain.price_doc)
+
+
 with open('html/subtrain-describe.html', 'w') as f:
         f.write(
                 (
@@ -104,16 +105,39 @@ with open('html/subtrain-describe.html', 'w') as f:
                 )
                 )
 
-pd.DataFrame.round
-
+ym = subtrain.yearmonth.unique()
 subtrain[['price_doc', 'year']].groupby('year').describe()
-plt.figure()
-subtrain[['price_doc', 'year']].boxplot(by = 'year')
-plt.show()
+
+# Price Boxplots by Year
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,8), sharex = True)
+subtrain[['price_log', 'year']].boxplot(by = 'year', ax = ax2)
+subtrain[['price_doc', 'year']].boxplot(by = 'year', ax = ax1)
+ax2.yaxis.tick_right()
+ax1.xaxis.set_label_text("Year")
+ax2.xaxis.set_label_text("Year")
+ax1.yaxis.set_major_formatter(tform_currency)
+
+fig.savefig('figs/price-boxplot.png')
+
+
+joint = sns.JointGrid(x = subtrain.year.values, y = subtrain.price_doc.values)
+joint = joint.plot_joint(sns.boxplot)
+joint = joint.plot_marginals(sns.distplot, color = '#15D888')
+# joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False, bins = 10)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
+
+# sns.lmplot(x = 'yearmonth', y = 'de')
+
+# dir(ax1.yaxis)
+
+# plt.Axes.set_label
 
 subtrain[['year', 'month', 'day']] = subtrain[['year', 'month', 'day']].astype('object')
-# subtrain.dtypes
-# subtrain = subtrain.groupby('yearmonth').mean()
+
+
+
+
+
 subtrain = subtrain.set_index('timestamp')
 subtrain = subtrain.resample('M').mean()
 subtrain = subtrain.sort_index()
@@ -122,21 +146,22 @@ subtrain.head()
 
 X = subtrain.month_number.values
 Y = subtrain.price_doc.values
-
+Y_log = subtrain.price_log.values
 
 
 # sns.set_style("seaborn-deep")
 fig, ax = plt.subplots(figsize=(12,8))
 ax.plot(  subtrain.index.values
-        , Y
+        , Y_log
         , linewidth=2
         # , linestyle=':'
         , marker='o'
         )
-ax.set_title('Price v Months')
+ax.set_title('log(Price) v Months')
 ax.set_xlabel('Months')
-ax.set_ylabel('Price')
-ax.yaxis.set_major_formatter(tform_currency)
+ax.set_ylabel('log(Price)')
+fig.savefig('figs/price_log-series.png')
+# ax.yaxis.set_major_formatter(tform_currency)
 # fig.savefig('figs/p2-3_price-v-months.png')
 
 # rubles
@@ -147,40 +172,63 @@ ax.yaxis.set_major_formatter(tform_currency)
 #  x = x+x*.0212
 # x
 
-
+# subtrain[['price_doc', 'price_log']].hist(bins = 15)
+# subtrain[['price_doc', 'price_log']].qqplot()
 
 # df = subtrain.replace(np.nan, 0)
 # df.index = df.index.date
 
-# # plt.figure()
-# f, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=True, figsize=(24,16))
-# lag_plot(np.log(df['price_doc']), lag=1, ax=ax1)
-# lag_plot(np.log(df['price_doc']), lag=3, ax=ax2)
-# lag_plot(np.log(df['price_doc']), lag=5, ax=ax3)
-# plt.show()
+# # Lag Plots
+fig, (ax1, ax2, ax3) = plt.subplots(3, sharex=True, sharey=True, figsize=(24,16))
+lag_plot(subtrain['price_log'], lag=1, ax=ax1)
+lag_plot(subtrain['price_log'], lag=5, ax=ax2)
+lag_plot(subtrain['price_log'], lag=15, ax=ax3)
+ax1.set_title('Lag Plots of log(Price)')
+ax1.annotate('Lag = 1', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+ax2.annotate(' Lag = 2', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+ax3.annotate('Lag = 3', xy = (.95,.95), xycoords = "axes fraction", fontsize=12)
+plt.show()
+fig.savefig('figs/price-log-lagplots.png')
 
 # plt.figure()
-# ax2 = lag_plot(np.log(df['price_doc']), lag=2)
+# ax2 = lag_plot(np.log(subtrain['price_doc']), lag=1)
+
 # plt.show()
+
 
 # plt.figure()
 # lag_plot(np.log(df['price_doc']), lag=3)
 # plt.show()
 
-plt.figure()
-boxplot(np.log(df['price_doc']), by = 'year')
-plt.show()
+# plt.figure()
+# boxplot(np.log(subtrain['price_doc']), by = 'year')
+# plt.show()
 
 fig, ax = plt.subplots(figsize=(24,16))
 ax.set_title('Home Price AR Plot')
-autocorrelation_plot(df['price_doc'])
+x = autocorrelation_plot(subtrain['price_doc'])
 plt.show()
 fig.savefig('figs/home-price-ar-plot.png')
 
-# plt.figure()
-# boxplot(np.log(df['price_doc']))
-# plt.show()
 
+# Price qq plots
+fig, (ax1, ax2) = plt.subplots(2, figsize=(24,16))
+sm.qqplot(subtrain.price_doc.values, line = 'q', ax = ax1)
+sm.qqplot(subtrain.price_log.values, line = 'q', ax = ax2)
+ax1.set_title("Price and log(Price) QQ-Plot")
+ax1.yaxis.set_label("Price")
+ax1.annotate('Price', xy = (.005,.95), xycoords = "axes fraction", fontsize=12)
+ax1.annotate('log(Price)', xy = (.005,.95), xycoords = "axes fraction", fontsize=12)
+fig.savefig('figs/price-qq.png')
+
+
+# Price Histograms
+fig, (ax1, ax2) = plt.subplots(2, figsize=(24,16))
+sns.distplot(subtrain.price_doc.values, axlabel = 'Price', kde = True, bins = 10, ax = ax1, norm_hist = True)
+sns.distplot(subtrain.price_log.values, axlabel = 'Log(Price)', kde = True, bins = 10, ax = ax2, norm_hist = True)
+ax1.set_title('Density of Price and Log(Price)')
+ax1.xaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/price-hist.png')
 
 #! Problem 2-3
 # sns.set_style("seaborn-deep")
@@ -196,10 +244,13 @@ ax.set_ylabel('Price')
 ax.yaxis.set_major_formatter(tform_currency)
 fig.savefig('figs/p2-3_price-v-months.png')
 
+joint = sns.JointGrid(x = subtrain.month_number.values, y = subtrain.price_doc.values)
+joint = joint.plot_joint(sns.scatterplot, color = '#15D888')
+joint = joint.plot_marginals(sns.distplot, color = '#15D888', kde = False, bins = 10)#, shade=True)
+joint.savefig('figs/p2-4b_joint_plot.png')
 
 
-
-
+# sns.boxplot(data = subtrain.price_log)
 # import pprint
 # import numpy as np
 
@@ -233,23 +284,22 @@ reg = smf.ols("price_doc ~ month_number", data = subtrain).fit()
 # TODO: Capture output for report
 reg.summary()
 
-reg._results.mse_model
-reg._results.mse_resid
-reg._results.mse_total
+# reg._results.mse_model
+# reg._results.mse_resid
+# reg._results.mse_total
 
-subtrain.outlier_test()
 
 with open('html/p2-4_ols_summary.html', 'w') as f:
         f.write(reg._results.summary2().as_html())
 
 
-line_plot, ax = plt.subplots(figsize=(12, 8))
-ax = sns.scatterplot(x = reg._results.get_influence().cooks_distance[0]
-                , y = reg._results.get_influence().cooks_distance[1]
-                , ax = ax)
-ax.set_title('Influence')
+# line_plot, ax = plt.subplots(figsize=(12, 8))
+# ax = sns.scatterplot(x = reg._results.get_influence().cooks_distance[0]
+#                 , y = reg._results.get_influence().cooks_distance[1]
+#                 , ax = ax)
+# ax.set_title('Influence')
 
-
+sns.lm
 
 
 # FIXME: Fix annotations
@@ -279,6 +329,21 @@ preg_plot.savefig('figs/p2-4a_preg_plot.png')
 fit_plot, ax = plt.subplots(figsize=(12, 8))
 fit_plot = sm.graphics.plot_fit(reg, "month_number", ax=ax)
 fit_plot.savefig('figs/p2-4a_fit_plot.png')
+
+# df = subtrain.reset_index()
+
+# fit_plot, ax = plt.subplots(figsize=(12, 8))
+fit_plot =  sns.lmplot(x='month_number' , y='price_doc' , data=subtrain.reset_index())
+fit_plot.axes[0][0].yaxis.set_major_formatter(tform_currency)
+fit_plot.savefig('figs/fit_plot.png')
+
+# dir(fit_plot.axes[0][0])
+
+
+# fit_plot, ax = plt.subplots(figsize=(12, 8))
+# fit_plot = sns.jointplot(x='month_number' , y='price_doc' , data=subtrain.reset_index(), kind="reg")
+# fit_plot = fit_plot.plot_marginals(sns.distplot, color = '#15D888', kde = False, ax=ax)
+ax.yaxis.set_major_formatter(tform_currency)
 
 
 ##? Part b
@@ -368,6 +433,7 @@ fig.savefig('figs/p2-4c_tsa_qqplot.png')
 fig = plt.figure(figsize=(12,8))
 ax = fig.add_subplot(111)
 ax = ts.resid.plot(ax=ax)
+ax.set_title("AR Residuals")
 fig.savefig('figs/p2-4c_tsa_resid.png')
 
 # Plot AR Residuals
@@ -405,6 +471,10 @@ p_out = ts.predict(start = p_start, end = p_end)
 predX = np.hstack((X, pred_range.month_number.values))
 predY = np.hstack((p_in, p_out))
 
+# reg.get_prediction().summary_frame(alpha = 0.05)
+reg.get_prediction(p_dt_range).summary_frame(alpha = 0.05).to_html()
+
+pd.DataFrame({'month_number': predX, 'pred_price': predY}).to_csv('html/ols_predictions.csv')
 
 # Plot OLS predictions
 # FIXME: Format
@@ -414,18 +484,17 @@ fig = sns.lineplot(predX, predY, label="OLS prediction", color = 'red')
 fig.savefig('figs/p2-4d_ols_predict.png')
 
 
-#? Forecast residuals using ARMA (for fun?)
-arma = sm.tsa.ARMA(subtrain.resid, (4,0), dates = subtrain.index).fit(maxlag = 3)
+# #? Forecast residuals using ARMA (for fun?)
+# arma = sm.tsa.ARMA(subtrain.resid, (4,0), dates = subtrain.index).fit(maxlag = 3)
 
-# FIXME: Format
-fig, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
-ax1 = subtrain.resid.loc[d_start:].plot(ax=ax1)
-ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1)
-ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
-fig.savefig('figs/p2-4d_arma_predict.png')
+# # FIXME: Format
+# fig, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
+# ax1 = subtrain.resid.loc[d_start:].plot(ax=ax1)
+# ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1)
+# ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2)
+# fig.savefig('figs/p2-4d_arma_predict.png')
 
 #! Problem 5
-
 
 #? Forecast price using OLS
 # Define forecast interval bounds
@@ -456,6 +525,7 @@ ax.plot(pred_range.month_number.values, pred_means.values+p_out.values, 'g', lab
 ax.legend(loc="best")
 fig.savefig('figs/p2-5d_ar_predict.png')
 
+# pd.DataFrame({'month_number': predX, 'pred_price': predY}).to_csv('html/ols_predictions.csv')
 
 # TODO: Refactor -> This is duplicated from above
 in_means = reg.get_prediction().summary_frame(alpha = 0.05)
@@ -476,10 +546,12 @@ pred2.index = pd.to_datetime(pred2.index).rename('timestamp')
 sns.tsplot([pred2.mean_ci_lower, pred2.mean_ci_upper, pred2['mean']])#, err_style="ci_bars", interpolate=False)
 # TODO: Save plot
 
+# sns.lmplot(x=pred2.mean, y=pred2.index, data=pred2, x_ci = "ci")
 
+# sm.graphics.plot_fit(reg, 0)
 # Save data for submission
 pred.round(0).to_csv('data/p2preds.csv')
-
+subtrain.to_csv('data/subtrain.csv')
 #? Forecast price using ARMA (for fun?)
 p = ts.predict(start = p_start, end = p_end)
 
@@ -491,12 +563,21 @@ arma = sm.tsa.ARMA(subtrain.price_doc, (4,0), dates = subtrain.index).fit(maxlag
 f, (ax1, ax2) = plt.subplots(2, sharex=False, sharey=False, figsize=(24,16))
 ax1 = subtrain.price_doc.loc[d_start:].plot(ax=ax1)
 ax1 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax1, alpha = 0.05)
+ax1.axes[0].set_title("Forecast Mean Home Price")
+ax1.axes[0].yaxis.set_label_text("Home Price")
+ax1.axes[0].xaxis.set_label_text("Date")
+ax1.axes[0].yaxis.set_major_formatter(tform_currency)
 ax2 = arma.plot_predict(p_start, p_end, dynamic=True, ax=ax2, alpha = 0.05)
+ax2.axes[1].set_title("Out of Sample Prediction")
+ax2.axes[1].xaxis.set_label_text("Date")
+ax2.axes[1].yaxis.set_label_text("Home Price")
+ax2.axes[1].yaxis.set_major_formatter(tform_currency)
+fig.savefig('figs/predict-results.png')
 # TODO: Save plot
 
 
 
-
+dir(ax1.axes[0])
 # sm.tsa.ARMA.fit.__dir__()
 
 

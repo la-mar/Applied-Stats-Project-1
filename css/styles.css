@@ -1,0 +1,267 @@
+
+        .img-centered {
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: auto;
+            margin-bottom: auto;
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+        }
+
+        .col-center {
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: auto;
+            margin-bottom: auto;
+            width: auto !important;
+            height: auto !important;
+            /* max-width: 100% !important; */
+        }
+
+        /* Hide scrollbar in source code blocks */
+        pre {
+            overflow: hidden !important;
+            background-color: none;
+        }
+        code {
+            overflow: hidden !important;
+            background-color: none !important;
+            padding: 30px;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.5em;
+            margin: 20px
+        }
+
+        p .pad {
+            margin-bottom: 1em;
+            vertical-align: top !important;
+        }
+
+        th {
+            text-align: center;
+        }
+        td {
+            text-align: center;
+        }
+        table.text-left td {
+            /* display: block; */
+            /* text-align: left !important; */
+            /* padding: 20px; */
+            font-size: .8em;
+        }
+        table.text-left td {
+            /* display: block; */
+            text-align: left !important;
+            /* padding: 20px; */
+        }
+        /* tr:hover{
+            background-color: #8E8C84;
+            color: #fff;
+        } */
+        tr.callout{
+            background-color: #325D88;
+            color: #fff;
+            font-weight: bold;
+        }
+        td.callout{
+            background-color: #325D88;
+            color: #fff;
+        }
+        td:hover{
+            background-color: #325D88;
+            color: #fff;
+        }
+
+        hr.section {
+            border-color: #006d91;
+        }
+
+        hr.subsection {
+            max-width: 80%;
+            margin-top: 0px;
+        }
+
+        li {
+            margin-top: 2em;
+            margin-bottom: .5em;
+            justify-items: right;
+        }
+        .text-intro {
+            display: block;
+            text-align: center;
+            margin: 10px;
+            font-size: 1.5em !important;
+        }
+
+        .text-center {
+            /* display: block; */
+            text-align: center !important;
+            /* font-size: .8em; */
+            /* padding: 20px; */
+        }
+        .text-center-sm {
+            /* display: block; */
+            text-align: center !important;
+            font-size: .8em;
+            /* padding: 20px; */
+        }
+        .text-left {
+            /* display: block; */
+            text-justify: left !important;
+            /* padding: 20px; */
+        }
+
+        .text-img-desc {
+            /* display: block; */
+            text-align: left !important;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            /* padding: 20px; */
+        }
+        .text-bold{
+            /* display: block; */
+            font-weight: bold;
+            /* padding: 20px; */
+        }
+        .text-callout {
+            font-weight: bold;
+        }
+
+        .section-label {
+            font-size: 2em;
+            vertical-align: middle;
+
+        }
+        .section-sublabel {
+            vertical-align: middle;
+        }
+        .td-callout {
+            font-weight: bold;
+            background-color: #20c997;
+        }
+
+        .section {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding-bottom: 20px;
+            padding-left: 15px;
+            padding-right: 15px;
+            display: block;
+        }
+
+        .subsection {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding-bottom: 20px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        p.indent {
+            text-indent: 2em;
+        }
+
+        #container-global {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+        }
+
+        #container-header {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 60px;
+            margin-bottom: 30px;
+            padding-bottom: 0px;
+        }
+
+        #authors {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            display: block;
+            text-align: center;
+            margin: 10px;
+            font-size: 1.5em;
+        }
+
+        #p2-4_ols_summary_fit_stats {
+            font-size: 1em;
+        }
+
+        #p2-4_ols_summary_coef {
+            font-size: 1em;
+            max-width: 80%;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        #p2-4_ols_summary_other {
+            font-size: 1em;
+        }
+        
+        /* #table-train-describe {
+            padding-bottom: 0px !important;
+            padding-top: 0px !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            border-spacing: 0px;
+            border-collapse: collapse;
+            padding: 0px !important;
+        } */
+
+
+/* desert scheme ported from vim to google prettify */
+pre.prettyprint { display: block; background-color: none; border-width: 0 }
+pre .str, code .str { color: #060 }
+pre .kwd, code .kwd { color: #006; font-weight: bold }
+pre .com, code .com { color: #600; font-style: italic }
+pre .typ, code .typ { color: #404; font-weight: bold }
+pre .lit, code .lit { color: #044 }
+pre .pun, code .pun { color: #440 }
+pre .pln, code .pln { color: #000 }
+pre .tag, code .tag { color: #006; font-weight: bold }
+pre .atn, code .atn { color: #404 }
+pre .atv, code .atv { color: #060 }
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums { margin-top: 0; margin-bottom: 0; color: #AEAEAE } /* IE indents via margin-left */
+li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 { list-style-type: none }
+/* Alternate shading for lines */
+li.L1,li.L3,li.L5,li.L7,li.L9 { }
+
+@media print {
+  pre.prettyprint { background-color: none }
+  pre .str, code .str { color: #060 }
+  pre .kwd, code .kwd { color: #006; font-weight: bold }
+  pre .com, code .com { color: #600; font-style: italic }
+  pre .typ, code .typ { color: #404; font-weight: bold }
+  pre .lit, code .lit { color: #044 }
+  pre .pun, code .pun { color: #440 }
+  pre .pln, code .pln { color: #000 }
+  pre .tag, code .tag { color: #006; font-weight: bold }
+  pre .atn, code .atn { color: #404 }
+  pre .atv, code .atv { color: #060 }
+}
